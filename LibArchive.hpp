@@ -25,6 +25,7 @@ class LibArchive {
 		// Workers
 		void create();
 		int extract();
+		void list();
 
 	private:
 		int copyData( struct archive *ar, struct archive *aw );

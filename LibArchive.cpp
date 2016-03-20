@@ -306,6 +306,73 @@ int LibArchive::extract() {
 	return 0;
 };
 
+void LibArchive::list() {
+
+	QMimeType mime = mimeDb.mimeTypeForFile( archiveName );
+
+	if ( mime == mimeDb.mimeTypeForFile( "file.gz" ) ) {
+		qDebug() << inputList.at( 0 );
+	}
+
+	else if ( mime == mimeDb.mimeTypeForFile( "file.bz2" ) ) {
+		qDebug() << inputList.at( 0 );
+	}
+
+	else if ( mime == mimeDb.mimeTypeForFile( "file.lzma" ) ) {
+		qDebug() << inputList.at( 0 );
+	}
+
+	else if ( mime == mimeDb.mimeTypeForFile( "file.xz" ) ) {
+		qDebug() << inputList.at( 0 );
+	}
+
+	else if ( mime == mimeDb.mimeTypeForFile( "file.uu" ) ) {
+		qDebug() << inputList.at( 0 );
+	}
+
+	else if ( mime == mimeDb.mimeTypeForFile( "file.lz" ) ) {
+		qDebug() << inputList.at( 0 );
+	}
+
+	else if ( mime == mimeDb.mimeTypeForFile( "file.lzo" ) ) {
+		qDebug() << inputList.at( 0 );
+	}
+
+	else {
+		struct archive *a;
+		struct archive_entry *entry;
+		int r;
+
+		// Source Archive
+		a = archive_read_new();
+		archive_read_support_format_all( a );
+		archive_read_support_filter_all( a );
+
+		if ( ( r = archive_read_open_filename( a, archiveName.toLatin1().data(), 10240 ) ) ) {
+			qDebug() << "[Error]" << archive_error_string( a );
+			return;
+		}
+
+		while ( true ) {
+			r = archive_read_next_header( a, &entry );
+			if ( r == ARCHIVE_EOF )
+				break;
+
+			if ( r < ARCHIVE_OK )
+				fprintf( stderr, "%s\n", archive_error_string( a ) );
+
+			if ( archive_entry_filetype( entry ) == AE_IFREG )
+				qDebug() << archive_entry_pathname( entry ) << archive_entry_size( entry ) << "bytes";
+
+			else
+				qDebug() << archive_entry_pathname( entry );
+		}
+
+		archive_read_close( a );
+		archive_read_free( a );
+	}
+};
+
 int LibArchive::copyData( struct archive *ar, struct archive *aw ) {
 
 	int r;
