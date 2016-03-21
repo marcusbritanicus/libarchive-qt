@@ -40,7 +40,7 @@ void printUsage( const char *exec ) {
 	std::cout << "Archiver v1.0\n" << std::endl;
 
 	std::cout << "Usage:\n\t" << exec << " -c archive.xxx file1 file2 file3 ..." << std::endl;
-	std::cout << "\t" << exec << " -d archive.xxx {member1 member2 ...}" << std::endl;
+	std::cout << "\t" << exec << " -d archive.xxx output_dir" << std::endl;
 	std::cout << "\t" << exec << " -l archive.xxx" << std::endl;
 };
 
@@ -71,7 +71,7 @@ int main( int argc, char** argv ) {
 
 		printUsage( argv[ 0 ] );
 
-		std::cout << "\nArchiver: ERROR: You need to specify one of -c or -d" << std::endl;
+		std::cout << "\nArchiver: ERROR: You need to specify one of -c, -d or -l" << std::endl;
 		return 1;
 	}
 
@@ -85,12 +85,15 @@ int main( int argc, char** argv ) {
 	else if ( !strcmp( argv[ 1 ], "-d" ) ) {
 		// Read archive code
 		LibArchive *arc = new LibArchive( argv[ 2 ] );
-		arc->setDestination( argv[ 2 ] );
+		if ( argc >= 4 )
+			arc->setDestination( argv[ 3 ] );
 		arc->extract();
 	}
 
 	else if ( !strcmp( argv[ 1 ], "-l" ) ) {
 		// List archive code
+		LibArchive *arc = new LibArchive( argv[ 2 ] );
+		arc->list();
 	}
 
 

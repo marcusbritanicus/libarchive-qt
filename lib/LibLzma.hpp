@@ -6,7 +6,8 @@
 
 #pragma once
 
-#include <Global.hpp>
+#include <QtCore>
+#include <assert.h>
 #include <lzma.h>
 
 class NBLzma {

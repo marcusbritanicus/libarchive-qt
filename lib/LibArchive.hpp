@@ -6,11 +6,42 @@
 
 #pragma once
 
-#include <Global.hpp>
+// LibArchive
+#include <archive.h>
+#include <archive_entry.h>
+
+// Qt Headers
+#include <QtCore>
+
+// SystemWide Headers
+#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <assert.h>
 
 #include <LibLzma.hpp>
 #include <LibBZip2.hpp>
 #include <LibGZip.hpp>
+
+class QMimeType;
+
+typedef struct {
+
+	/* Name of the entry */
+	QString name;
+
+	/* Size of the entry */
+	quint64 size;
+
+	/* Type of the entry */
+	int type;
+
+	/* Stat equivalent */
+	struct stat *stat;
+
+} ArchiveEntry;
+
+typedef QList<ArchiveEntry*> ArchiveEntries;
 
 class LibArchive {
 
@@ -25,7 +56,7 @@ class LibArchive {
 		// Workers
 		void create();
 		int extract();
-		void list();
+		ArchiveEntries list();
 
 	private:
 		int copyData( struct archive *ar, struct archive *aw );

@@ -6,7 +6,8 @@
 
 #pragma once
 
-#include <Global.hpp>
+#include <QtCore>
+#include <fstream>
 #include <bzlib.h>
 
 class NBBZip2 {
