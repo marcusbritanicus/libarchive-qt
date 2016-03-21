@@ -33,7 +33,7 @@
 #include <unistd.h>
 
 // LibArchive
-#include <LibArchive.hpp>
+#include <libarchiveqt.h>
 
 QString formatSize( qint64 num ) {
 
@@ -110,6 +110,7 @@ int main( int argc, char** argv ) {
 	else if ( !strcmp( argv[ 1 ], "-l" ) ) {
 		// List archive code
 		LibArchive *arc = new LibArchive( argv[ 2 ] );
+		qDebug() << arc->list().count();
 		Q_FOREACH(  ArchiveEntry *ae, arc->list() ) {
 			if ( ae->type == AE_IFREG )
 				qDebug() << ae->name.toLocal8Bit().data() << formatSize( ae->size ).toLocal8Bit().data();

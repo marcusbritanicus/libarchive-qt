@@ -26,7 +26,18 @@
 */
 
 #include <Global.hpp>
-#include <LibArchive.hpp>
+#include <libarchiveqt.h>
+
+#include <LibLzma.hpp>
+#include <LibLzma2.hpp>
+#include <LibBZip2.hpp>
+#include <LibGZip.hpp>
+
+// SystemWide Headers
+#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <assert.h>
 
 inline static bool isDir( QString path ) {
 

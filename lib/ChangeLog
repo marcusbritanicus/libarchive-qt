@@ -1,0 +1,3 @@
+Version 1.0.0
+	- First release
+	- Supports Gzip, BZip2, LZMA, LZMA2, Cpio, AR, ISO9660, PAX, Shar, Zip, 7Zip, Tar formats

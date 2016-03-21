@@ -7,7 +7,7 @@ INCLUDEPATH += . ../lib/
 LIBS += -L../lib/ -larchiveqt
 
 # Input
-SOURCES += Main.cpp
+SOURCES += example.cpp
 
 CONFIG += silent warn_on
 QT -= gui
