@@ -116,12 +116,15 @@ void LibArchive::create() {
 	}
 
 	else if ( mime == mimeDb.mimeTypeForFile( "file.lzma" ) ) {
-		qDebug() << "No compressor available as of now";
+		Q_FOREACH( QString input, inputList ) {
+			NBLzma *archive = new NBLzma( archiveName, NBLzma::WRITE, input  );
+			archive->create();
+		}
 	}
 
 	else if ( mime == mimeDb.mimeTypeForFile( "file.xz" ) ) {
 		Q_FOREACH( QString input, inputList ) {
-			NBLzma *archive = new NBLzma( archiveName, NBLzma::WRITE, input  );
+			NBXz *archive = new NBXz( archiveName, NBXz::WRITE, input  );
 			archive->create();
 		}
 	}
@@ -207,12 +210,15 @@ int LibArchive::extract() {
 	}
 
 	else if ( mime == mimeDb.mimeTypeForFile( "file.lzma" ) ) {
-		qDebug() << "No compressor available as of now";
+		Q_FOREACH( QString dest, inputList ) {
+			NBLzma *archive = new NBLzma( archiveName, NBLzma::READ, dest  );
+			archive->extract();
+		}
 	}
 
 	else if ( mime == mimeDb.mimeTypeForFile( "file.xz" ) ) {
 		Q_FOREACH( QString dest, inputList ) {
-			NBLzma *archive = new NBLzma( archiveName, NBLzma::READ, dest  );
+			NBXz *archive = new NBXz( archiveName, NBXz::READ, dest  );
 			archive->extract();
 		}
 	}

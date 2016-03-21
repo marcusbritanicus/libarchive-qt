@@ -20,6 +20,7 @@
 #include <assert.h>
 
 #include <LibLzma.hpp>
+#include <LibLzma2.hpp>
 #include <LibBZip2.hpp>
 #include <LibGZip.hpp>
 
