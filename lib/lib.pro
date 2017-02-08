@@ -35,12 +35,12 @@ unix {
 		PREFIX = /usr
 	}
 
+	INSTALLS	+= target includes data
 	CONFIG		+= create_pc create_prl no_install_prl link_pkgconfig
 	contains(DEFINES, LIB64): target.path = $$INSTALL_PREFIX/lib64
 	else: target.path = $$INSTALL_PREFIX/lib
 
-	INSTALLS				+= target includes data
-	target.path 		= $$PREFIX/lib/
+	target.path			= $$PREFIX/lib/
 	includes.files	= libarchive.h
 	includes.path		= $$PREFIX/include/lib$$TARGET
 
