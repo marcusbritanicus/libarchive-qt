@@ -41,11 +41,11 @@ unix {
 	else: target.path = $$INSTALL_PREFIX/lib
 
 	target.path			= $$PREFIX/lib/
-	includes.files	= libarchive.h
+	includes.files	= libarchiveqt.h
 	includes.path		= $$PREFIX/include/lib$$TARGET
 
 	data.path = $$PREFIX/share/lib$$TARGET/
-	data.files = README Changelog ReleaseNotes
+	data.files = Changelog README
 
 	QMAKE_PKGCONFIG_NAME = libarchive-qt
 	QMAKE_PKGCONFIG_DESCRIPTION = A Qt based archiving solution with libarchive backend
