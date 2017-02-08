@@ -42,7 +42,7 @@ unix {
 
 	target.path			= $$PREFIX/lib/
 	includes.files	= libarchiveqt.h
-	includes.path		= $$PREFIX/include/lib$$TARGET
+	includes.path		= $$PREFIX/include/
 
 	data.path = $$PREFIX/share/lib$$TARGET/
 	data.files = Changelog README
