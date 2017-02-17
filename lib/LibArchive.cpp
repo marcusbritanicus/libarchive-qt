@@ -168,14 +168,14 @@ void LibArchive::create() {
 		if ( r < ARCHIVE_OK )
 			qDebug() << "Cannot use the input filter/format.";
 
-		r = archive_write_open_filename( a, archiveName.toLatin1().data() );
+                r = archive_write_open_filename( a, archiveName.toUtf8().data() );
 		if ( r < ARCHIVE_OK )
 			qDebug() << "Unable to write file for writing.";
 
 		Q_FOREACH( QString file, inputList ) {
 			char *filename;
 			filename = new char[ file.count() + 1 ];
-			strcpy( filename, file.toLatin1().data() );
+                        strcpy( filename, file.toUtf8().data() );
 
 			stat( filename, &st );
 			entry = archive_entry_new();
@@ -250,7 +250,7 @@ int LibArchive::extract() {
 		// Change to the target directory
 		char srcDir[ 10240 ] = { 0 };
 		getcwd( srcDir, 10240 );
-		chdir( dest.toLatin1().data() );
+                chdir( dest.toUtf8().data() );
 
 		struct archive *a;
 		struct archive *ext;
@@ -275,7 +275,7 @@ int LibArchive::extract() {
 		archive_write_disk_set_options( ext, flags );
 		archive_write_disk_set_standard_lookup( ext );
 
-		if ( ( r = archive_read_open_filename( a, archiveName.toLatin1().data(), 10240 ) ) )
+                if ( ( r = archive_read_open_filename( a, archiveName.toUtf8().data(), 10240 ) ) )
 			return 1;
 
 		while ( true ) {
@@ -338,7 +338,7 @@ ArchiveEntries LibArchive::list() {
 	archive_read_support_format_all( a );
 	archive_read_support_filter_all( a );
 
-	if ( ( r = archive_read_open_filename( a, archiveName.toLatin1().data(), 10240 ) ) ) {
+        if ( ( r = archive_read_open_filename( a, archiveName.toUtf8().data(), 10240 ) ) ) {
 		qDebug() << "[Error]" << archive_error_string( a );
 		return ArchiveEntries();
 	}
