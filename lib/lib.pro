@@ -1,7 +1,7 @@
 TEMPLATE	= lib
 TARGET		= archiveqt
 
-greaterThan(QT_MAJOR_VERSION, 4) {
+greaterThan( QT_MAJOR_VERSION, 4 ) {
 	TARGET = archiveqt5
 }
 
@@ -25,10 +25,10 @@ lessThan(QT_MAJOR_VERSION, 5) {
 CONFIG += silent warn_on
 QT -= gui
 
-MOC_DIR			= ../build/moc-X
-OBJECTS_DIR	= ../build/obj-X
-RCC_DIR			= ../build/qrc-X
-UI_DIR			= ../build/uic-X
+MOC_DIR			= build/moc
+OBJECTS_DIR		= build/obj
+RCC_DIR			= build/qrc
+UI_DIR			= build/uic
 
 unix {
 	isEmpty(PREFIX) {
@@ -54,4 +54,9 @@ unix {
 	QMAKE_PKGCONFIG_INCDIR  = $$includes.path
 	QMAKE_PKGCONFIG_VERSION = $$VERSION
 	QMAKE_PKGCONFIG_DESTDIR = pkgconfig
+}
+
+macx {
+	INCLUDEPATH += /usr/local/opt/libarchive/include /usr/local/opt/xz/include
+	QMAKE_LFLAGS += -L/usr/local/opt/libarchive/lib -L/usr/local/opt/xz/lib
 }
