@@ -64,13 +64,22 @@ class LibArchive {
 		void setWorkingDir( QString );
 		void setDestination( QString );
 
-		// Workers
+		/* Create an archive */
 		void create();
+
+		/* Extract the archive */
 		int extract();
+
+		/* Extract a named member of the archive */
+		int extractMember( QString );
+
 		ArchiveEntries list();
 
 	private:
+		/* Internal worker for copying data */
 		int copyData( struct archive *ar, struct archive *aw );
+
+		/* Set the archive filter format based on extensions */
 		int setFilterFormat( struct archive *ar, QMimeType mType );
 
 		QString archiveName;
@@ -78,4 +87,7 @@ class LibArchive {
 		QStringList inputList;
 		QString dest;
 		QString src;
+
+		ArchiveEntries memberList;
+		bool readDone;
 };

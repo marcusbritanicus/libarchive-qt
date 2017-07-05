@@ -58,6 +58,7 @@ void printUsage( const char *exec ) {
 
 	std::cout << "Usage:\n\t" << exec << " -c archive.xxx file1 file2 file3 ..." << std::endl;
 	std::cout << "\t" << exec << " -d archive.xxx output_dir" << std::endl;
+	std::cout << "\t" << exec << " -m archive.xxx output_dir member_name" << std::endl;
 	std::cout << "\t" << exec << " -l archive.xxx" << std::endl;
 };
 
@@ -77,6 +78,13 @@ int main( int argc, char** argv ) {
 		return 1;
 	}
 
+	else if ( ( argc < 4 ) and ( strcmp( argv[ 1 ], "-m" ) == 0 ) ) {
+		printUsage( argv[ 0 ] );
+
+		std::cout << "\nArchiver: ERROR: No member name specified." << std::endl;
+		return 1;
+	}
+
 	else if ( ( argc > 3 ) and ( strcmp( argv[ 1 ], "-l" ) == 0 ) )  {
 		printUsage( argv[ 0 ] );
 
@@ -84,11 +92,11 @@ int main( int argc, char** argv ) {
 		return 1;
 	}
 
-	else if ( ( argc >= 3 ) and strcmp( argv[ 1 ], "-c" ) and strcmp( argv[ 1 ], "-d" ) and strcmp( argv[ 1 ], "-l" ) ) {
+	else if ( ( argc >= 3 ) and strcmp( argv[ 1 ], "-c" ) and strcmp( argv[ 1 ], "-d" ) and strcmp( argv[ 1 ], "-l" ) and strcmp( argv[ 1 ], "-m" ) ) {
 
 		printUsage( argv[ 0 ] );
 
-		std::cout << "\nArchiver: ERROR: You need to specify one of -c, -d or -l" << std::endl;
+		std::cout << "\nArchiver: ERROR: You need to specify one of -c, -d, -m or -l" << std::endl;
 		return 1;
 	}
 
@@ -107,6 +115,18 @@ int main( int argc, char** argv ) {
 		arc->extract();
 	}
 
+	else if ( !strcmp( argv[ 1 ], "-m" ) ) {
+		// Read archive code
+		LibArchive *arc = new LibArchive( argv[ 2 ] );
+		if ( argc == 5 ) {
+			arc->setDestination( argv[ 3 ] );
+			arc->extractMember( argv[ 4 ] );
+		}
+		else {
+			arc->extractMember( argv[ 3 ] );
+		}
+	}
+
 	else if ( !strcmp( argv[ 1 ], "-l" ) ) {
 		// List archive code
 		LibArchive *arc = new LibArchive( argv[ 2 ] );
@@ -119,8 +139,6 @@ int main( int argc, char** argv ) {
 				qDebug() << ae->name.toLocal8Bit().data();
 		}
 	}
-
-
 
 	else
 		printUsage( argv[ 0 ] );

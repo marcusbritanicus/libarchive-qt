@@ -25,10 +25,10 @@ lessThan(QT_MAJOR_VERSION, 5) {
 CONFIG += silent warn_on
 QT -= gui
 
-MOC_DIR			= build/moc
-OBJECTS_DIR		= build/obj
-RCC_DIR			= build/qrc
-UI_DIR			= build/uic
+MOC_DIR			= ../build/moc
+OBJECTS_DIR		= ../build/obj
+RCC_DIR			= ../build/qrc
+UI_DIR			= ../build/uic
 
 unix {
 	isEmpty(PREFIX) {
@@ -36,7 +36,7 @@ unix {
 	}
 
 	INSTALLS	+= target includes data
-	CONFIG		+= create_pc create_prl no_install_prl link_pkgconfig
+	CONFIG		+= create_pc no_install_prl link_pkgconfig
 	contains(DEFINES, LIB64): target.path = $$INSTALL_PREFIX/lib64
 	else: target.path = $$INSTALL_PREFIX/lib
 

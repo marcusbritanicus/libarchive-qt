@@ -38,6 +38,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <assert.h>
+#include <libgen.h>
 
 inline static bool isDir( QString path ) {
 
@@ -70,9 +71,60 @@ inline static QStringList recDirWalk( QString path ) {
 	return fileList;
 };
 
+inline static QString dirName( QString path ) {
+
+	while( path.contains( "//" ) )
+		path = path.replace( "//", "/" );
+
+	if ( path.endsWith( "/" ) )
+		path.chop( 1 );
+
+	char *dupPath = strdup( path.toLocal8Bit().constData() );
+	QString dirPth = QString( dirname( dupPath ) ) + "/";
+	free( dupPath );
+
+	return ( dirPth == "//" ? "/" : dirPth );
+};
+
+inline static QString baseName( QString path ) {
+
+	while( path.contains( "//" ) )
+		path = path.replace( "//", "/" );
+
+	if ( path.endsWith( "/" ) )
+		path.chop( 1 );
+
+	char *dupPath = strdup( path.toLocal8Bit().constData() );
+	QString basePth = QString( basename( dupPath ) );
+	free( dupPath );
+
+	return basePth;
+};
+
+bool exists( QString path ) {
+
+	return not access( path.toLocal8Bit().constData(), F_OK );
+}
+
+inline static int mkpath( QString path, mode_t mode ) {
+
+	/* Root always exists */
+	if ( path == "/" )
+		return 0;
+
+	/* If the directory exists, thats okay for us */
+	if ( exists( path ) )
+		return 0;
+
+	mkpath( dirName( path ), mode );
+
+	return mkdir( path.toLocal8Bit().constData(), mode );
+};
+
 LibArchive::LibArchive( QString archive ) {
 
-	archiveName = QString( archive );
+	readDone = false;
+	archiveName = QDir( archive ).absolutePath();
 };
 
 void LibArchive::updateInputFiles( QStringList inFiles ) {
@@ -104,8 +156,8 @@ void LibArchive::setDestination( QString path ) {
 	*/
 
 	dest = QString( path );
-	if ( not QFileInfo( dest ).exists() )
-		QDir::home().mkpath( path );
+	if ( not QFileInfo( QDir( dest ).absolutePath() ).exists() )
+		mkpath( path, 0755 );
 };
 
 void LibArchive::create() {
@@ -250,7 +302,7 @@ int LibArchive::extract() {
 		// Change to the target directory
 		char srcDir[ 10240 ] = { 0 };
 		getcwd( srcDir, 10240 );
-                chdir( dest.toUtf8().data() );
+		chdir( dest.toUtf8().data() );
 
 		struct archive *a;
 		struct archive *ext;
@@ -275,7 +327,7 @@ int LibArchive::extract() {
 		archive_write_disk_set_options( ext, flags );
 		archive_write_disk_set_standard_lookup( ext );
 
-                if ( ( r = archive_read_open_filename( a, archiveName.toUtf8().data(), 10240 ) ) )
+		if ( ( r = archive_read_open_filename( a, archiveName.toUtf8().data(), 10240 ) ) )
 			return 1;
 
 		while ( true ) {
@@ -324,10 +376,104 @@ int LibArchive::extract() {
 	return 0;
 };
 
+int LibArchive::extractMember( QString memberName ) {
+
+	// Change to the target directory
+	char srcDir[ 10240 ] = { 0 };
+	getcwd( srcDir, 10240 );
+	chdir( dest.toUtf8().data() );
+
+	struct archive *a;
+	struct archive *ext;
+	struct archive_entry *entry;
+	int flags;
+	int r;
+
+	/* Select which attributes we want to restore. */
+	flags = ARCHIVE_EXTRACT_TIME;
+	flags |= ARCHIVE_EXTRACT_PERM;
+	flags |= ARCHIVE_EXTRACT_ACL;
+	flags |= ARCHIVE_EXTRACT_FFLAGS;
+	flags |= ARCHIVE_EXTRACT_OWNER;
+
+	// Source Archive
+	a = archive_read_new();
+	archive_read_support_format_all( a );
+	archive_read_support_filter_all( a );
+
+	// Structure to write files to disk
+	ext = archive_write_disk_new();
+	archive_write_disk_set_options( ext, flags );
+	archive_write_disk_set_standard_lookup( ext );
+
+	r = archive_read_open_filename( a, archiveName.toUtf8().data(), 10240 );
+	if ( r != ARCHIVE_OK ) {
+		qDebug() << "[ERROR]: Failed to open archive:" << archiveName;
+		return 1;
+	}
+
+	while ( true ) {
+		r = archive_read_next_header( a, &entry );
+		if ( r == ARCHIVE_EOF )
+			break;
+
+		if ( r < ARCHIVE_OK )
+			fprintf( stderr, "%s\n", archive_error_string( a ) );
+
+		if ( r < ARCHIVE_WARN )
+			return 1;
+
+		/* Perform extraction only if entry name matches the given name */
+		if ( memberName.compare( archive_entry_pathname( entry ) ) == 0 ) {
+
+			r = archive_write_header( ext, entry );
+			if ( r < ARCHIVE_OK )
+				fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+			else if ( archive_entry_size( entry ) > 0 ) {
+				r = copyData( a, ext );
+				if ( r < ARCHIVE_OK )
+					fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+				if ( r < ARCHIVE_WARN )
+					return 1;
+			}
+
+			r = archive_write_finish_entry( ext );
+			if ( r < ARCHIVE_OK )
+				fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+			if ( r < ARCHIVE_WARN )
+				return 1;
+
+			archive_read_close( a );
+			archive_read_free( a );
+
+			archive_write_close( ext );
+			archive_write_free( ext );
+
+			chdir( srcDir );
+
+			return 0;
+		}
+	}
+
+	archive_read_close( a );
+	archive_read_free( a );
+
+	archive_write_close( ext );
+	archive_write_free( ext );
+
+	chdir( srcDir );
+
+	qDebug() << "[Error]" << "File not found in the archive:" << memberName;
+
+	return 0;
+};
+
 ArchiveEntries LibArchive::list() {
 
 	QMimeType mime = mimeDb.mimeTypeForFile( archiveName );
-	ArchiveEntries memberList;
 
 	struct archive *a;
 	struct archive_entry *entry;
@@ -338,8 +484,9 @@ ArchiveEntries LibArchive::list() {
 	archive_read_support_format_all( a );
 	archive_read_support_filter_all( a );
 
-        if ( ( r = archive_read_open_filename( a, archiveName.toUtf8().data(), 10240 ) ) ) {
+	if ( ( r = archive_read_open_filename( a, archiveName.toUtf8().data(), 10240 ) ) ) {
 		qDebug() << "[Error]" << archive_error_string( a );
+		readDone = true;
 		return ArchiveEntries();
 	}
 
@@ -362,6 +509,8 @@ ArchiveEntries LibArchive::list() {
 
 	archive_read_close( a );
 	archive_read_free( a );
+
+	readDone = true;
 
 	return memberList;
 };

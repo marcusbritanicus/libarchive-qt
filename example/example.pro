@@ -12,7 +12,7 @@ SOURCES += example.cpp
 CONFIG += silent warn_on
 QT -= gui
 
-MOC_DIR 	= ../build/moc-X
-OBJECTS_DIR = ../build/obj-X
-RCC_DIR		= ../build/qrc-X
-UI_DIR      = ../build/uic-X
+MOC_DIR 	= ../build/moc
+OBJECTS_DIR = ../build/obj
+RCC_DIR		= ../build/qrc
+UI_DIR      = ../build/uic
