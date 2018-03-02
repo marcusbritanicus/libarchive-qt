@@ -5,6 +5,10 @@ DEPENDPATH += .
 INCLUDEPATH += . ../lib/
 
 LIBS += -L../lib/ -larchiveqt
+greaterThan( QT_MAJOR_VERSION, 4 ) {
+	LIBS += -L../lib/ -larchiveqt5
+	LIBS -= -larchiveqt
+}
 
 # Input
 SOURCES += example.cpp
