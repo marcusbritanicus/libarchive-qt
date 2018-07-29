@@ -416,11 +416,33 @@ int LibArchiveQt::extractMember( QString memberName ) {
 
 	bool dir = false, found = false;
 
+	/* Direct member */
 	Q_FOREACH( ArchiveEntry *ae, memberList ) {
-		if ( ae->name.compare( memberName ) == 0 ) {
+		if ( ae->name == memberName ) {
 			dir = ( ae->type == AE_IFDIR );
 			found = true;
 			break;
+		}
+
+		if ( ae->name == memberName + "/" ) {
+			memberName += "/";
+			dir = ( ae->type == AE_IFDIR );
+			found = true;
+			break;
+		}
+	}
+
+	if ( not found ) {
+		/* Always check for @memberName + "/" because, all indirect members will be directories */
+		memberName += "/";
+
+		/* Indirect member: ex. debug/ is a member if debug/path/to/file.ext exists */
+		Q_FOREACH( ArchiveEntry *ae, memberList ) {
+			if ( ae->name.startsWith( memberName ) == 0 ) {
+				dir = true;
+				found = true;
+				break;
+			}
 		}
 	}
 
