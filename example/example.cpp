@@ -33,7 +33,7 @@
 #include <unistd.h>
 
 // LibArchive
-#include <libarchiveqt.h>
+#include "libarchiveqt.h"
 
 QString formatSize( qint64 num ) {
 
@@ -102,14 +102,14 @@ int main( int argc, char** argv ) {
 
 	if ( !strcmp( argv[ 1 ], "-c" ) ) {
 		// Write archive code
-		LibArchive *arc = new LibArchive( argv[ 2 ] );
+		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
 		arc->updateInputFiles( app.arguments().mid( 3 ) );
 		arc->create();
 	}
 
 	else if ( !strcmp( argv[ 1 ], "-d" ) ) {
 		// Read archive code
-		LibArchive *arc = new LibArchive( argv[ 2 ] );
+		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
 		if ( argc >= 4 )
 			arc->setDestination( argv[ 3 ] );
 		arc->extract();
@@ -117,7 +117,7 @@ int main( int argc, char** argv ) {
 
 	else if ( !strcmp( argv[ 1 ], "-m" ) ) {
 		// Read archive code
-		LibArchive *arc = new LibArchive( argv[ 2 ] );
+		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
 		if ( argc == 5 ) {
 			arc->setDestination( argv[ 3 ] );
 			arc->extractMember( argv[ 4 ] );
@@ -129,7 +129,7 @@ int main( int argc, char** argv ) {
 
 	else if ( !strcmp( argv[ 1 ], "-l" ) ) {
 		// List archive code
-		LibArchive *arc = new LibArchive( argv[ 2 ] );
+		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
 		qDebug() << arc->list().count();
 		Q_FOREACH(  ArchiveEntry *ae, arc->list() ) {
 			if ( ae->type == AE_IFREG )

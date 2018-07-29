@@ -22,7 +22,7 @@ lessThan(QT_MAJOR_VERSION, 5) {
 	SOURCES += MimeHandler/*.cpp StandardPaths/*.cpp
 }
 
-CONFIG += silent warn_on
+CONFIG += silent warn_on shared_and_static build_all
 QT -= gui
 
 MOC_DIR			= ../build/moc

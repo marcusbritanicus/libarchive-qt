@@ -48,16 +48,15 @@ typedef struct {
 	int type;
 
 	/* Stat equivalent */
-	struct stat *stat;
-
+	struct stat info;
 } ArchiveEntry;
 
 typedef QList<ArchiveEntry*> ArchiveEntries;
 
-class LibArchive {
+class LibArchiveQt {
 
 	public:
-		LibArchive( QString );
+		LibArchiveQt( QString );
 
 		// Convinience Functions
 		void updateInputFiles( QStringList );

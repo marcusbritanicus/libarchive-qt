@@ -1,17 +1,17 @@
 TEMPLATE = app
 TARGET = archiver
 
-DEPENDPATH += .
+DEPENDPATH += . ../lib/
 INCLUDEPATH += . ../lib/
 
-LIBS += -L../lib/ -larchiveqt
-greaterThan( QT_MAJOR_VERSION, 4 ) {
-	LIBS += -L../lib/ -larchiveqt5
-	LIBS -= -larchiveqt
-}
+LIBS += -larchive -lz -lbz2 -llzma
 
 # Input
 SOURCES += example.cpp
+
+# Input
+HEADERS += ../lib/libarchiveqt.h ../lib/LibLzma.hpp ../lib/LibLzma2.hpp ../lib/LibBZip2.hpp ../lib/LibGZip.hpp
+SOURCES += ../lib/LibArchive.cpp ../lib/LibLzma.cpp ../lib/LibLzma2.cpp ../lib/LibBZip2.cpp ../lib/LibGZip.cpp
 
 CONFIG += silent warn_on
 QT -= gui
