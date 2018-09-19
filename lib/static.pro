@@ -22,8 +22,8 @@ lessThan(QT_MAJOR_VERSION, 5) {
 	SOURCES += MimeHandler/*.cpp StandardPaths/*.cpp
 }
 
-CONFIG += silent warn_on shared_and_static
-QT -= gui
+CONFIG += silent warn_on static
+QT -= gui shared
 
 MOC_DIR			= ../build/moc
 OBJECTS_DIR		= ../build/obj
@@ -41,7 +41,7 @@ unix {
 	else: target.path = $$INSTALL_PREFIX/lib
 
 	target.path			= $$PREFIX/lib/
-	includes.files	= libarchiveqt.h
+	includes.files		= libarchiveqt.h
 	includes.path		= $$PREFIX/include/
 
 	data.path = $$PREFIX/share/lib$$TARGET/
