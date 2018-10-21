@@ -10,11 +10,15 @@ VERSION   = 1.1.0
 DEPENDPATH 	+= . MimeHandler StandardPaths
 INCLUDEPATH	+= . MimeHandler StandardPaths
 
-LIBS += -larchive -lz -lbz2 -llzma
+LIBS += -larchive -lz -lbz2 -llzma -llz4 -llz
 
-# Input
-HEADERS += libarchiveqt.h LibLzma.hpp LibLzma2.hpp LibBZip2.hpp LibGZip.hpp
-SOURCES += LibArchive.cpp LibLzma.cpp LibLzma2.cpp LibBZip2.cpp LibGZip.cpp
+# Sources
+HEADERS += libarchiveqt.h LibLzma.hpp LibLzma2.hpp LibBZip2.hpp LibGZip.hpp LibLZip.hpp
+SOURCES += LibArchive.cpp LibLzma.cpp LibLzma2.cpp LibBZip2.cpp LibGZip.cpp LibLZip.cpp
+
+# LZ4
+HEADERS += platform.h util.h lz4io.h
+SOURCES += lz4io.c
 
 # MimeType handling + QStandardPaths
 lessThan(QT_MAJOR_VERSION, 5) {

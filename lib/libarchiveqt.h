@@ -53,7 +53,8 @@ typedef struct {
 
 typedef QList<ArchiveEntry*> ArchiveEntries;
 
-class LibArchiveQt {
+class LibArchiveQt : public QThread {
+	Q_OBJECT
 
 	public:
 		LibArchiveQt( QString );
@@ -64,22 +65,49 @@ class LibArchiveQt {
 		void setDestination( QString );
 
 		/* Create an archive */
-		void create();
+		void createArchive();
 
 		/* Extract the archive */
-		int extract();
+		void extractArchive();
 
 		/* Extract a named member of the archive */
-		int extractMember( QString );
+		void extractMember( QString );
 
-		ArchiveEntries list();
+		/* List the contetns of the archive */
+		ArchiveEntries listArchive();
 
 	private:
+		enum Mode {
+			None				= 0xF650E7,
+			Single,
+			Container
+		};
+
+		enum Job {
+			NoJob				= 0x25CEE9,
+			CreateArchive,
+			ExtractArchive,
+			ExtractMember,
+			ListArchive
+		};
+
 		/* Internal worker for copying data */
 		int copyData( struct archive *ar, struct archive *aw );
 
 		/* Set the archive filter format based on extensions */
-		int setFilterFormat( struct archive *ar, QMimeType mType );
+		void setFilterFormat( QMimeType mType );
+
+		/* Create an archive - Internal Worker */
+		bool doCreateArchive();
+
+		/* Extract the archive - Internal Worker */
+		bool doExtractArchive();
+
+		/* Extract a named member of the archive - Internal Worker */
+		bool doExtractMember( QString );
+
+		int mArchiveFilter;
+		int mArchiveFormat;
 
 		QString archiveName;
 
@@ -89,4 +117,21 @@ class LibArchiveQt {
 
 		ArchiveEntries memberList;
 		bool readDone;
+		int archiveType;
+
+		/* What job are we doing? */
+		int mJob;
+
+		/* Is the job running? */
+		bool isRunning;
+
+		/* Member to be extracted */
+		QString extractedMember;
+
+	protected:
+		void run();
+
+	Q_SIGNALS:
+		void jobComplete();
+		void jobFailed();
 };

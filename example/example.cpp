@@ -35,6 +35,7 @@
 // LibArchive
 #include "libarchiveqt.h"
 
+/* To pretty print file sizes */
 QString formatSize( qint64 num ) {
 
 	QString total;
@@ -52,46 +53,79 @@ QString formatSize( qint64 num ) {
 	return total;
 };
 
+/* Pretty print the usage */
 void printUsage( const char *exec ) {
 
 	std::cout << "Archiver v1.0\n" << std::endl;
 
 	std::cout << "Usage:\n\t" << exec << " -c archive.xxx file1 file2 file3 ..." << std::endl;
 	std::cout << "\t" << exec << " -d archive.xxx output_dir" << std::endl;
-	std::cout << "\t" << exec << " -m archive.xxx output_dir member_name" << std::endl;
+	std::cout << "\t" << exec << " -m archive.xxx member_name output_dir" << std::endl;
 	std::cout << "\t" << exec << " -l archive.xxx" << std::endl;
 };
 
 int main( int argc, char** argv ) {
 
+	/* Init the QApplication instance */
 	QCoreApplication app( argc, argv);
 
+	/*
+		*
+		* We need three arguments at minimum
+		* 	1. The program name (argv[ 0 ]) => Always existing
+		* 	2. The switch: one of c, d, m or l: Tells the program what to do
+		* 	3. The archive name to operate on (list or decompress)
+		*	In case we are compressing or extracting a member, an additional argument is necessary
+		*
+	*/
 	if ( argc < 3 ) {
+
 		printUsage( argv[ 0 ] );
 		return 1;
 	}
 
+	/* Print help text or usage */
+	else if ( ( argc == 2 ) and ( strcmp( argv[ 1 ], "-h" ) == 0 ) ) {
+
+		printUsage( argv[ 0 ] );
+		return 0;
+	}
+
+	/* Print help text or usage */
+	else if ( ( argc == 2 ) and ( strcmp( argv[ 1 ], "--help" ) == 0 ) ) {
+
+		printUsage( argv[ 0 ] );
+		return 0;
+	}
+
+	/* Switch c, but no input files mentioned */
 	else if ( ( argc == 3 ) and ( strcmp( argv[ 1 ], "-c" ) == 0 ) ) {
+
 		printUsage( argv[ 0 ] );
 
 		std::cout << "\nArchiver: ERROR: No input files specified." << std::endl;
 		return 1;
 	}
 
+	/* Switch m, but no member name mentioned */
 	else if ( ( argc < 4 ) and ( strcmp( argv[ 1 ], "-m" ) == 0 ) ) {
+
 		printUsage( argv[ 0 ] );
 
 		std::cout << "\nArchiver: ERROR: No member name specified." << std::endl;
 		return 1;
 	}
 
+	/* Excess arguments */
 	else if ( ( argc > 3 ) and ( strcmp( argv[ 1 ], "-l" ) == 0 ) )  {
+
 		printUsage( argv[ 0 ] );
 
 		std::cout << "\nArchiver: ERROR: Too many files specified" << std::endl;
 		return 1;
 	}
 
+	/* No switch mentioned */
 	else if ( ( argc >= 3 ) and strcmp( argv[ 1 ], "-c" ) and strcmp( argv[ 1 ], "-d" ) and strcmp( argv[ 1 ], "-l" ) and strcmp( argv[ 1 ], "-m" ) ) {
 
 		printUsage( argv[ 0 ] );
@@ -100,24 +134,37 @@ int main( int argc, char** argv ) {
 		return 1;
 	}
 
-	if ( !strcmp( argv[ 1 ], "-c" ) ) {
+	/* Compress the input files argv[3+] into archive argv[2] */
+	else if ( strcmp( argv[ 1 ], "-c" ) == 0 ) {
+
 		// Write archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
+		QObject::connect( arc, SIGNAL( jobComplete() ), &app, SLOT( quit() ) );
+
 		arc->updateInputFiles( app.arguments().mid( 3 ) );
-		arc->create();
+		arc->createArchive();
 	}
 
-	else if ( !strcmp( argv[ 1 ], "-d" ) ) {
+	/* Decompress the archive argv[2] optionally to argv[3] */
+	else if ( strcmp( argv[ 1 ], "-d" ) == 0 ) {
+
 		// Read archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
+		QObject::connect( arc, SIGNAL( jobComplete() ), &app, SLOT( quit() ) );
+
 		if ( argc >= 4 )
 			arc->setDestination( argv[ 3 ] );
-		arc->extract();
+
+		arc->extractArchive();
 	}
 
-	else if ( !strcmp( argv[ 1 ], "-m" ) ) {
+	/* Decompress the member argv[3] optionally to argv[4] from archive argv[2] */
+	else if ( strcmp( argv[ 1 ], "-m" ) == 0 ) {
+
 		// Read archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
+		QObject::connect( arc, SIGNAL( jobComplete() ), &app, SLOT( quit() ) );
+
 		if ( argc == 5 ) {
 			arc->setDestination( argv[ 3 ] );
 			arc->extractMember( argv[ 4 ] );
@@ -127,11 +174,14 @@ int main( int argc, char** argv ) {
 		}
 	}
 
-	else if ( !strcmp( argv[ 1 ], "-l" ) ) {
+	/* List archive argv[2] */
+	else if ( strcmp( argv[ 1 ], "-l" ) == 0 ) {
+
 		// List archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
-		qDebug() << arc->list().count();
-		Q_FOREACH(  ArchiveEntry *ae, arc->list() ) {
+		QObject::connect( arc, SIGNAL( jobComplete() ), &app, SLOT( quit() ) );
+
+		Q_FOREACH(  ArchiveEntry *ae, arc->listArchive() ) {
 			if ( ae->type == AE_IFREG )
 				qDebug() << ae->name.toLocal8Bit().data() << formatSize( ae->size ).toLocal8Bit().data();
 
@@ -140,8 +190,12 @@ int main( int argc, char** argv ) {
 		}
 	}
 
-	else
-		printUsage( argv[ 0 ] );
+	/* Print help text */
+	else {
 
-	return 0;
+		printUsage( argv[ 0 ] );
+		return 0;
+	}
+
+	return app.exec();
 };

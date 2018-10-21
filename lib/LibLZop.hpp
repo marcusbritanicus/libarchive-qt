@@ -13,11 +13,18 @@
 class NBBZip2 {
 
 	public:
-		NBBZip2( QString, QString file = QString() );
-		bool extract();
+		enum Mode {
+			READ,			// Read a zip file
+			WRITE,			// Write a zip file
+		};
+
+		NBBZip2( QString, NBBZip2::Mode mode, QString file = QString() );
+		void create();
+		void extract();
 
 		static QString fileName;
 		static QString bz2FileName;
+		static NBBZip2::Mode mode;
 
 	private:
 		BZFILE *bz2;

@@ -4,7 +4,7 @@ TARGET = archiver
 DEPENDPATH += . ../lib/
 INCLUDEPATH += . ../lib/
 
-LIBS += ../lib/libarchiveqt5.a -larchive -lz -lbz2 -llzma
+LIBS += ../lib/libarchiveqt5.a -larchive -lz -lbz2 -llzma -llz4 -llz
 
 # Input
 SOURCES += example.cpp

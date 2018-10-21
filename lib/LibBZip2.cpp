@@ -33,94 +33,37 @@ const int MAX_READ_SIZE = 40960;
 QString NBBZip2::bz2FileName = QString();
 QString NBBZip2::fileName = QString();
 
-NBBZip2::NBBZip2( QString archive, NBBZip2::Mode openmode, QString file ) {
+NBBZip2::NBBZip2( QString archive, QString file ) {
 
-	NBBZip2::Mode mode = openmode;
 	int error = 0;
 
-	switch( mode ) {
-		case NBBZip2::READ : {
-			bz2FileName = QString( archive );
-			if ( not file.isEmpty() ) {
-				if ( QFileInfo( file ).isDir() ) {
-					fileName = QDir( file ).filePath( QString( archive ) );
-					fileName.chop( 4 );
-				}
-
-				else if ( QFileInfo( file ).exists() ) {
-					QFile::rename( file, file + ".old" );
-					fileName = QString( file );
-				}
-
-				else {
-					fileName = QString( file );
-				}
-			}
-
-			else {
-				fileName = QString( archive );
-				fileName.chop( 4 );
-			}
-
-			bzFile = fopen( qPrintable( bz2FileName ), "r" );
-			bz2 = BZ2_bzReadOpen( &error, bzFile, 0, 0, NULL, 0 );
-			break;
+	bz2FileName = QString( archive );
+	if ( not file.isEmpty() ) {
+		if ( QFileInfo( file ).isDir() ) {
+			fileName = QDir( file ).filePath( QString( archive ) );
+			fileName.chop( 4 );
 		}
 
-		case NBBZip2::WRITE : {
-			bz2FileName = QString( archive );
+		else if ( QFileInfo( file ).exists() ) {
+			QFile::rename( file, file + ".old" );
 			fileName = QString( file );
-
-			bzFile = fopen( qPrintable( bz2FileName ), "w" );
-			bz2 = BZ2_bzWriteOpen( &error, bzFile, 9, 0, 30 );
-			break;
 		}
-	}
-};
 
-void NBBZip2::create() {
-
-	int error;
-	// Write to the bz2 file created above
-
-	std::ifstream ifile( qPrintable( fileName ), std::ifstream::binary );
-	off_t fileSize = QFileInfo( fileName ).size();
-
-	if ( fileSize < MAX_READ_SIZE ) {
-		char buffer[ MAX_READ_SIZE ] = { "\x00" };
-		ifile.read( buffer, fileSize );
-		BZ2_bzWrite( &error, bz2, buffer, fileSize );
+		else {
+			fileName = QString( file );
+		}
 	}
 
 	else {
-		off_t nextChunkSize = MAX_READ_SIZE, remaining = fileSize - MAX_READ_SIZE;
-		while ( nextChunkSize > 0 ) {
-			char buffer[ MAX_READ_SIZE ] = { "\x00" };
-			ifile.read( buffer, nextChunkSize );
-			BZ2_bzWrite( &error, bz2, buffer, nextChunkSize );
-			nextChunkSize = ( remaining > MAX_READ_SIZE ) ? MAX_READ_SIZE : remaining;
-			remaining -= nextChunkSize;
-		}
+		fileName = QString( archive );
+		fileName.chop( 4 );
 	}
 
-	if ( error != BZ_OK )
-		return;
+	bzFile = fopen( qPrintable( bz2FileName ), "r" );
+	bz2 = BZ2_bzReadOpen( &error, bzFile, 0, 0, NULL, 0 );
+};
 
-	fflush( bzFile );
-
-	// Close the file
-	unsigned int inBytes, outBytes;
-	BZ2_bzWriteClose( &error, bz2, 0, &inBytes, &outBytes );
-
-	if ( error != BZ_OK )
-		return;
-
-	fclose( bzFile );
-
-	return;
-}
-
-void NBBZip2::extract() {
+bool NBBZip2::extract() {
 
 	int error;
 
@@ -140,15 +83,15 @@ void NBBZip2::extract() {
 	}
 
 	if ( error != BZ_STREAM_END )
-		return;
+		return false;
 
 	// Close the file
 	BZ2_bzReadClose( &error, bz2 );
 
 	if ( error != BZ_OK )
-		return;
+		return false;
 
 	fclose( bzFile );
 
-	return;
+	return true;
 };

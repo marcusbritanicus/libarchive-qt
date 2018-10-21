@@ -13,23 +13,11 @@
 class NBLzma {
 
 	public:
-		enum LzmaError {
-			NREG,			// Not a reguar file
-			NFND,			// File/Folder not found
-		};
-
-		enum Mode {
-			READ,			// Read a zip file
-			WRITE,			// Write a zip file
-		};
-
-		NBLzma( QString, NBLzma::Mode mode, QString file = QString() );
-		void create();
-		void extract();
+		NBLzma( QString, QString file = QString() );
+		bool extract();
 
 		static QString fileName;
 		static QString lzmaFileName;
-		static NBLzma::Mode mode;
 
 	private:
 		FILE *fdin, *fdout;

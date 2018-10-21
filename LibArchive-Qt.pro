@@ -9,3 +9,4 @@ static.file = lib/static.pro
 static.depends = shared
 
 example.depends = static
+example.file = example/example.pro

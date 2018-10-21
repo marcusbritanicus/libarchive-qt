@@ -13,23 +13,11 @@
 class NBXz {
 
 	public:
-		enum LzmaError {
-			NREG,			// Not a reguar file
-			NFND,			// File/Folder not found
-		};
-
-		enum Mode {
-			READ,			// Read a zip file
-			WRITE,			// Write a zip file
-		};
-
-		NBXz( QString, NBXz::Mode mode, QString file = QString() );
-		void create();
-		void extract();
+		NBXz( QString, QString file = QString() );
+		bool extract();
 
 		static QString fileName;
 		static QString xzFileName;
-		static NBXz::Mode mode;
 
 	private:
 		FILE *fdin, *fdout;
