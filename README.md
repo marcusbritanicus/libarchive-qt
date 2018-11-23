@@ -26,4 +26,12 @@ If and when I find time and knowledge to add those filters I shall do so.
 
 Those who know to add these and other filters to this library, are welcome to do so. :)
 
-*Note:* My libarchive version is 3.2.2
+## My System Info
+ - OS:					Debian Sid
+ - Qt:					Qt5 5.11.2
+ - LibArchive:			3.2.2
+ - LibLzma: 			5.2.2
+ - LibBz2:				1.0.6
+ - zlib:				1.2.11
+ - liblz (lzip):		1.10
+ - lzop (binary):		1.03
