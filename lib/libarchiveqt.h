@@ -61,6 +61,7 @@ class LibArchiveQt : public QThread {
 		void updateInputFiles( QStringList );
 		void setWorkingDir( QString );
 		void setDestination( QString );
+		void waitForFinished();
 
 		/* Create an archive */
 		void createArchive();
