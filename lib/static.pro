@@ -17,8 +17,8 @@ HEADERS += libarchiveqt.h LibLzma.hpp LibLzma2.hpp LibBZip2.hpp LibGZip.hpp LibL
 SOURCES += LibArchive.cpp LibLzma.cpp LibLzma2.cpp LibBZip2.cpp LibGZip.cpp LibLZip.cpp
 
 # LZ4
-HEADERS += platform.h util.h lz4io.h
-SOURCES += lz4io.c
+HEADERS += lz4dec.h
+SOURCES += lz4dec.c
 
 # MimeType handling + QStandardPaths
 lessThan(QT_MAJOR_VERSION, 5) {
