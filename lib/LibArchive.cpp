@@ -35,7 +35,9 @@ extern "C" {
 	#include "lz4dec.h"
 }
 
-#include "LibLZip.hpp"
+#ifdef HAVE_LZLIB
+	#include "LibLZip.hpp"
+#endif
 
 // SystemWide Headers
 #include <errno.h>
