@@ -362,27 +362,213 @@ bool LibArchiveQt::doExtractArchive() {
 		if ( mType == mimeDb.mimeTypeForFile( "file.lz" ) ) {
 			/* LZip Extractor */
 
-			dest = archiveName;
-			dest.chop( 3 );
-
-			int i = 0;
-			while ( exists( dest ) ) {
-				i++;
-
+			#ifdef HAVE_LZLIB
 				dest = archiveName;
 				dest.chop( 3 );
 
-				dest = dirName( dest )  + QString( "(%1) - " ).arg( i ) + baseName( dest );
-			}
+				int i = 0;
+				while ( exists( dest ) ) {
+					i++;
 
-			NBLZip *lzExt = new NBLZip( archiveName, dest );
-			return lzExt->extract();
+					dest = archiveName;
+					dest.chop( 3 );
+
+					dest = dirName( dest )  + QString( "(%1) - " ).arg( i ) + baseName( dest );
+				}
+
+				NBLZip *lzExt = new NBLZip( archiveName, dest );
+				return lzExt->extract();
+			#else
+				QString lzip;
+
+				QStringList exeLocs = QString::fromLocal8Bit( qgetenv( "PATH" ) ).split( ":", QString::SkipEmptyParts );
+				Q_FOREACH( QString loc, exeLocs ) {
+					if ( exists( loc + "/lzip" ) ) {
+						lzip = loc + "/lzip";
+						break;
+					}
+				}
+
+				if  ( not lzip.count() ) {
+					qDebug() << "External program lzip not found.";
+					return false;
+				}
+
+				struct archive *a;
+				struct archive *ext;
+				struct archive_entry *entry;
+				int flags;
+
+				int r = ARCHIVE_OK;
+
+				/* Select which attributes we want to restore. */
+				flags = ARCHIVE_EXTRACT_TIME;
+				flags |= ARCHIVE_EXTRACT_PERM;
+				flags |= ARCHIVE_EXTRACT_ACL;
+				flags |= ARCHIVE_EXTRACT_FFLAGS;
+
+				// Source Archive
+				a = archive_read_new();
+				r |= archive_read_support_format_raw( a );
+				r |= archive_read_support_filter_program( a, QString( lzip + " -d" ).toLocal8Bit().data() );
+
+				if ( r < ARCHIVE_OK )
+					qDebug() << "Cannot use the input filter/format.";
+
+				// Structure to write files to disk
+				ext = archive_write_disk_new();
+				archive_write_disk_set_options( ext, flags );
+				archive_write_disk_set_standard_lookup( ext );
+
+				if ( ( r = archive_read_open_filename( a, archiveName.toLocal8Bit().data(), 10240 ) ) ) {
+					qDebug() << "Unable to read archive:" << archive_error_string( a );
+					return false;
+				}
+
+				while ( true ) {
+					r = archive_read_next_header( a, &entry );
+					if ( r == ARCHIVE_EOF ) {
+						qDebug() << "EOF";
+						break;
+					}
+
+					if ( r < ARCHIVE_OK )
+						fprintf( stderr, "%s\n", archive_error_string( a ) );
+
+					if ( r < ARCHIVE_WARN ) {
+						fprintf( stderr, "%s\n", archive_error_string( a ) );
+						return false;
+					}
+
+					r = archive_write_header( ext, entry );
+					if ( r < ARCHIVE_OK )
+						fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+					else if ( archive_entry_size( entry ) == 0 ) {
+						r = copyData( a, ext );
+						if ( r < ARCHIVE_OK )
+							fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+						if ( r < ARCHIVE_WARN )
+							return false;
+					}
+
+					r = archive_write_finish_entry( ext );
+					if ( r < ARCHIVE_OK )
+						fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+					if ( r < ARCHIVE_WARN )
+						return true;
+				}
+
+				archive_read_close( a );
+				archive_read_free( a );
+
+				archive_write_close( ext );
+				archive_write_free( ext );
+
+				return true;
+			#endif
 		}
 
 		else if ( mType == mimeDb.mimeTypeForFile( "file.uu" ) ) {
 			/* UUEncode Extractor */
 
 			return false;
+		}
+
+		else if ( mType == mimeDb.mimeTypeForFile( "file.lrz" ) ) {
+			/* lrzip Extractor */
+
+			QString lrzip;
+
+			QStringList exeLocs = QString::fromLocal8Bit( qgetenv( "PATH" ) ).split( ":", QString::SkipEmptyParts );
+			Q_FOREACH( QString loc, exeLocs ) {
+				if ( exists( loc + "/lrzip" ) ) {
+					lrzip = loc + "/lrzip";
+					break;
+				}
+			}
+
+			if  ( not lrzip.count() ) {
+				qDebug() << "External program lrzip not found.";
+				return false;
+			}
+
+			struct archive *a;
+			struct archive *ext;
+			struct archive_entry *entry;
+			int flags;
+
+			int r = ARCHIVE_OK;
+
+			/* Select which attributes we want to restore. */
+			flags = ARCHIVE_EXTRACT_TIME;
+			flags |= ARCHIVE_EXTRACT_PERM;
+			flags |= ARCHIVE_EXTRACT_ACL;
+			flags |= ARCHIVE_EXTRACT_FFLAGS;
+
+			// Source Archive
+			a = archive_read_new();
+			r |= archive_read_support_format_raw( a );
+			r |= archive_read_support_filter_program( a, QString( lrzip + " -d" ).toLocal8Bit().data() );
+
+			if ( r < ARCHIVE_OK )
+				qDebug() << "Cannot use the input filter/format.";
+
+			// Structure to write files to disk
+			ext = archive_write_disk_new();
+			archive_write_disk_set_options( ext, flags );
+			archive_write_disk_set_standard_lookup( ext );
+
+			if ( ( r = archive_read_open_filename( a, archiveName.toLocal8Bit().data(), 10240 ) ) ) {
+				qDebug() << "Unable to read archive:" << archive_error_string( a );
+				return false;
+			}
+
+			while ( true ) {
+				r = archive_read_next_header( a, &entry );
+				if ( r == ARCHIVE_EOF ) {
+					qDebug() << "EOF";
+					break;
+				}
+
+				if ( r < ARCHIVE_OK )
+					fprintf( stderr, "%s\n", archive_error_string( a ) );
+
+				if ( r < ARCHIVE_WARN ) {
+					fprintf( stderr, "%s\n", archive_error_string( a ) );
+					return false;
+				}
+
+				r = archive_write_header( ext, entry );
+				if ( r < ARCHIVE_OK )
+					fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+				else if ( archive_entry_size( entry ) == 0 ) {
+					r = copyData( a, ext );
+					if ( r < ARCHIVE_OK )
+						fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+					if ( r < ARCHIVE_WARN )
+						return false;
+				}
+
+				r = archive_write_finish_entry( ext );
+				if ( r < ARCHIVE_OK )
+					fprintf( stderr, "%s\n", archive_error_string( ext ) );
+
+				if ( r < ARCHIVE_WARN )
+					return true;
+			}
+
+			archive_read_close( a );
+			archive_read_free( a );
+
+			archive_write_close( ext );
+			archive_write_free( ext );
+
+			return true;
 		}
 
 		else if ( mType == mimeDb.mimeTypeForFile( "file.lzo" ) ) {
@@ -393,7 +579,7 @@ bool LibArchiveQt::doExtractArchive() {
 			QStringList exeLocs = QString::fromLocal8Bit( qgetenv( "PATH" ) ).split( ":", QString::SkipEmptyParts );
 			Q_FOREACH( QString loc, exeLocs ) {
 				if ( exists( loc + "/lzop" ) ) {
-					lzop = lzop + "/lzop";
+					lzop = loc + "/lzop";
 					break;
 				}
 			}
@@ -407,6 +593,7 @@ bool LibArchiveQt::doExtractArchive() {
 			struct archive *ext;
 			struct archive_entry *entry;
 			int flags;
+
 			int r = ARCHIVE_OK;
 
 			/* Select which attributes we want to restore. */
