@@ -244,6 +244,17 @@ void LibArchiveQt::setDestination( QString path ) {
 		mkpath( path, 0755 );
 };
 
+void LibArchiveQt::waitForFinished() {
+
+	if ( not isRunning )
+		return;
+
+	QEventLoop eventLoop;
+	connect(this, &LibArchiveQt::jobFailed, &eventLoop, &QEventLoop::quit);
+	connect(this, &LibArchiveQt::jobComplete, &eventLoop, &QEventLoop::quit);
+	eventLoop.exec();
+}
+
 void LibArchiveQt::run() {
 
 	switch( mJob ) {
