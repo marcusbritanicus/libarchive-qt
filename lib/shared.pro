@@ -20,7 +20,7 @@ SOURCES += LibArchive.cpp LibLzma.cpp LibLzma2.cpp LibBZip2.cpp LibGZip.cpp
 HEADERS += lz4dec.h
 SOURCES += lz4dec.c
 
-if ( $$HAVE_LZLIB ) {
+contains ( DEFINES, HAVE_LZLIB ) {
 	LIBS += -llz
 
 	HEADERS += LibLZip.hpp
