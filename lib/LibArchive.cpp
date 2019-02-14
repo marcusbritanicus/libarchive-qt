@@ -66,12 +66,16 @@ inline static QStringList recDirWalk( QString path ) {
 	QStringList fileList;
 
 	if ( not isDir( path ) )
-		return QStringList();
+		return fileList;
 
 	QDirIterator it( path, QDir::AllEntries | QDir::System | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories );
 	while ( it.hasNext() ) {
 		it.next();
-		fileList.append( it.fileInfo().filePath() );
+		QString file = it.fileInfo().filePath();
+		if ( file.startsWith( "/" ) )
+			file.remove( 0, 1 );
+
+		fileList.append( file );
 	}
 
 	return fileList;
@@ -121,6 +125,10 @@ inline static int mkpath( QString path, mode_t mode ) {
 	/* If the directory exists, thats okay for us */
 	if ( exists( path ) )
 		return 0;
+
+	/* If the path is absolute, remove the leading '/' */
+	if ( path.startsWith( '/' ) )
+		path.remove( 0, 1 );
 
 	mkpath( dirName( path ), mode );
 
@@ -219,12 +227,15 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles ) {
 		if ( isDir( file ) )
 			inputList.append( recDirWalk( file ) );
 
-		else
+		else {
+			if ( file.startsWith( '/' ) )
+				file.remove( 0, 1 );
+
 			inputList.append( file );
+		}
 	}
 
 	inputList.sort();
-	inputList.removeDuplicates();
 };
 
 void LibArchiveQt::setWorkingDir( QString wDir ) {
