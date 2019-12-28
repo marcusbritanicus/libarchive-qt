@@ -1,8 +1,8 @@
 TEMPLATE	= lib
-TARGET		= archiveqt
+TARGET		= archiveqt5
 
-greaterThan( QT_MAJOR_VERSION, 4 ) {
-	TARGET = archiveqt5
+lessThan( QT_MAJOR_VERSION, 5 ) {
+	TARGET = archiveqt
 }
 
 VERSION   = 1.1.0
