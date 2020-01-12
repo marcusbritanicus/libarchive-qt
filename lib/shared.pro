@@ -29,8 +29,8 @@ contains ( DEFINES, HAVE_LZLIB ) {
 
 # MimeType handling + QStandardPaths
 lessThan(QT_MAJOR_VERSION, 5) {
-	HEADERS += MimeHandler/*.hpp StandardPaths/*.hpp
-	SOURCES += MimeHandler/*.cpp StandardPaths/*.cpp
+	HEADERS += MimeHandler.hpp StandardPaths.hpp
+	SOURCES += MimeHandler.cpp StandardPaths.cpp
 }
 
 CONFIG += silent warn_on shared

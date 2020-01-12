@@ -29,8 +29,8 @@ contains ( DEFINES, HAVE_LZLIB ) {
 
 # MimeType handling + QStandardPaths
 lessThan(QT_MAJOR_VERSION, 5) {
-	HEADERS += MimeHandler/*.hpp StandardPaths/*.hpp
-	SOURCES += MimeHandler/*.cpp StandardPaths/*.cpp
+	HEADERS += MimeHandler.hpp StandardPaths.hpp
+	SOURCES += MimeHandler.cpp StandardPaths.cpp
 }
 
 CONFIG += silent warn_on static
@@ -46,8 +46,8 @@ unix {
 		PREFIX = /usr
 	}
 
-	INSTALLS	+= target includes data
-	CONFIG		+= create_pc no_install_prl link_pkgconfig
+	INSTALLS	+= target includes data pc
+	CONFIG		+= no_install_prl link_pkgconfig
 	contains(DEFINES, LIB64): target.path = $$INSTALL_PREFIX/lib64
 	else: target.path = $$INSTALL_PREFIX/lib
 
@@ -57,6 +57,12 @@ unix {
 
 	data.path = $$PREFIX/share/lib$$TARGET/
 	data.files = Changelog README
+
+	pc.path = $$PREFIX/share/pkgconfig
+	pc.files = pkgconfig/archiveqt5.pc
+	lessThan( QT_MAJOR_VERSION, 5 ) {
+		pc.files = pkgconfig/archiveqt.pc
+	}
 
 	QMAKE_PKGCONFIG_NAME = libarchive-qt
 	QMAKE_PKGCONFIG_DESCRIPTION = A Qt based archiving solution with libarchive backend
