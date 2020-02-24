@@ -75,6 +75,9 @@ class LibArchiveQt : public QThread {
 		/* List the contetns of the archive */
 		ArchiveEntries listArchive();
 
+		/* Exit status */
+		int exitStatus();
+
 	private:
 		enum Mode {
 			None				= 0xF650E7,
@@ -123,6 +126,9 @@ class LibArchiveQt : public QThread {
 
 		/* Is the job running? */
 		bool isRunning;
+
+		/* Exit status */
+		int mExitStatus;
 
 		/* Member to be extracted */
 		QString extractedMember;

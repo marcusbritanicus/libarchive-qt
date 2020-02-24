@@ -141,6 +141,7 @@ LibArchiveQt::LibArchiveQt( QString archive ) {
 	isRunning = false;
 	mJob = NoJob;
 	extractedMember = QString();
+	mExitStatus = 0;				// 0 - Good, 1 - Bad
 
 	archiveName = QDir( archive ).absolutePath();
 
@@ -221,6 +222,11 @@ ArchiveEntries LibArchiveQt::listArchive() {
 	return memberList;
 };
 
+int LibArchiveQt::exitStatus() {
+
+	return mExitStatus;
+};
+
 void LibArchiveQt::updateInputFiles( QStringList inFiles ) {
 
 	Q_FOREACH( QString file, inFiles ) {
@@ -236,6 +242,7 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles ) {
 	}
 
 	inputList.sort();
+	inputList.removeDuplicates();
 };
 
 void LibArchiveQt::setWorkingDir( QString wDir ) {
@@ -272,33 +279,45 @@ void LibArchiveQt::run() {
 
 	switch( mJob ) {
 		case CreateArchive: {
-			if ( doCreateArchive() )
+			if ( doCreateArchive() ) {
+				mExitStatus = 0;
 				emit jobComplete();
+			}
 
-			else
+			else {
+				mExitStatus = 1;
 				emit jobFailed();
+			}
 
 			isRunning = false;
 			return;
 		}
 
 		case ExtractArchive: {
-			if ( doExtractArchive() )
+			if ( doExtractArchive() ) {
+				mExitStatus = 0;
 				emit jobComplete();
+			}
 
-			else
+			else {
+				mExitStatus = 1;
 				emit jobFailed();
+			}
 
 			isRunning = false;
 			return;
 		}
 
 		case ExtractMember: {
-			if ( doExtractMember( extractedMember ) )
+			if ( doExtractMember( extractedMember ) ) {
+				mExitStatus = 0;
 				emit jobComplete();
+			}
 
-			else
+			else {
+				mExitStatus = 1;
 				emit jobFailed();
+			}
 
 			isRunning = false;
 			return;
