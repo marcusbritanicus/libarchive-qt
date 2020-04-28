@@ -137,10 +137,12 @@ int main( int argc, char** argv ) {
 
 		// Write archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
-		QObject::connect( arc, SIGNAL( jobComplete() ), &app, SLOT( quit() ) );
 
 		arc->updateInputFiles( app.arguments().mid( 3 ) );
 		arc->createArchive();
+		arc->waitForFinished();
+
+		return 0;
 	}
 
 	/* Decompress the archive argv[2] optionally to argv[3] */
@@ -148,12 +150,14 @@ int main( int argc, char** argv ) {
 
 		// Read archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
-		QObject::connect( arc, SIGNAL( jobComplete() ), &app, SLOT( quit() ) );
 
 		if ( argc >= 4 )
 			arc->setDestination( argv[ 3 ] );
 
 		arc->extractArchive();
+		arc->waitForFinished();
+
+		return 0;
 	}
 
 	/* Decompress the member argv[3] optionally to argv[4] from archive argv[2] */
@@ -161,7 +165,6 @@ int main( int argc, char** argv ) {
 
 		// Read archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
-		QObject::connect( arc, SIGNAL( jobComplete() ), &app, SLOT( quit() ) );
 
 		if ( argc == 5 ) {
 			arc->setDestination( argv[ 3 ] );
@@ -170,6 +173,9 @@ int main( int argc, char** argv ) {
 		else {
 			arc->extractMember( argv[ 3 ] );
 		}
+
+		arc->waitForFinished();
+		return 0;
 	}
 
 	/* List archive argv[2] */
@@ -177,7 +183,6 @@ int main( int argc, char** argv ) {
 
 		// List archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
-		QObject::connect( arc, SIGNAL( jobComplete() ), &app, SLOT( quit() ) );
 
 		Q_FOREACH(  ArchiveEntry *ae, arc->listArchive() ) {
 			if ( ae->type == AE_IFREG )
@@ -186,6 +191,10 @@ int main( int argc, char** argv ) {
 			else
 				qDebug() << ae->name.toLocal8Bit().data();
 		}
+
+		arc->waitForFinished();
+
+		return 0;
 	}
 
 	/* Print help text */
@@ -194,6 +203,4 @@ int main( int argc, char** argv ) {
 		printUsage( argv[ 0 ] );
 		return 0;
 	}
-
-	return app.exec();
 };

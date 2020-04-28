@@ -139,4 +139,7 @@ class LibArchiveQt : public QThread {
 	Q_SIGNALS:
 		void jobComplete();
 		void jobFailed();
+
+		/* Progress is always in percentage */
+		void progress( int );
 };

@@ -71,11 +71,7 @@ inline static QStringList recDirWalk( QString path ) {
 	QDirIterator it( path, QDir::AllEntries | QDir::System | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories );
 	while ( it.hasNext() ) {
 		it.next();
-		QString file = it.fileInfo().filePath();
-		if ( file.startsWith( "/" ) )
-			file.remove( 0, 1 );
-
-		fileList.append( file );
+		fileList.append( it.fileInfo().filePath() );
 	}
 
 	return fileList;
@@ -233,12 +229,8 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles ) {
 		if ( isDir( file ) )
 			inputList.append( recDirWalk( file ) );
 
-		else {
-			if ( file.startsWith( '/' ) )
-				file.remove( 0, 1 );
-
+		else
 			inputList.append( file );
-		}
 	}
 
 	inputList.sort();
@@ -273,7 +265,7 @@ void LibArchiveQt::waitForFinished() {
 	connect(this, &LibArchiveQt::jobFailed, &eventLoop, &QEventLoop::quit);
 	connect(this, &LibArchiveQt::jobComplete, &eventLoop, &QEventLoop::quit);
 	eventLoop.exec();
-}
+};
 
 void LibArchiveQt::run() {
 
@@ -340,6 +332,11 @@ bool LibArchiveQt::doCreateArchive() {
 	int fd;
 	int r = ARCHIVE_OK;
 	int errors = 0;
+	int processed = 0;
+
+	/* Prepare the workingDir */
+	if ( src.isEmpty() )
+		src = "/";
 
 	a = archive_write_new();
 
@@ -358,15 +355,16 @@ bool LibArchiveQt::doCreateArchive() {
 	}
 
 	Q_FOREACH( QString file, inputList ) {
+		printf( "Compressing %s: ", file.toUtf8().constData() );
 		if ( stat( file.toUtf8().constData(), &st ) != 0 ) {
 			errors++;
-			qDebug() << file << strerror( errno );
+			printf( "%s\n", strerror( errno ) );
 			continue;
 		}
 
 		char *filename;
 		filename = new char[ file.count() + 1 ];
-		strcpy( filename, QString( file ).toUtf8().data() );
+		strcpy( filename, QDir( src ).relativeFilePath( file ).toUtf8().data() );
 
 		entry = archive_entry_new();
 		archive_entry_set_pathname( entry, filename );
@@ -385,6 +383,11 @@ bool LibArchiveQt::doCreateArchive() {
 		}
 		close( fd );
 		archive_entry_free( entry );
+
+		printf( "[Done]\n" );
+		processed++;
+
+		emit progress( processed * 100 / inputList.count() );
 	}
 
 	archive_write_close( a );
@@ -818,11 +821,20 @@ bool LibArchiveQt::doExtractArchive() {
 	}
 
 	else {
+		/* To show progress we want the number of entries. So list the archive first. */
+		/* Then count the number of members. Then clear the memberList */
+		listArchive();
+		int entryCount = memberList.count();
+		memberList.clear();
+		readDone = false;
+
 		struct archive *a;
 		struct archive *ext;
 		struct archive_entry *entry;
 		int flags;
 		int r = ARCHIVE_OK;
+
+		int processedEntries = 0;
 
 		/* Select which attributes we want to restore. */
 		flags = ARCHIVE_EXTRACT_TIME;
@@ -877,6 +889,9 @@ bool LibArchiveQt::doExtractArchive() {
 				if ( r < ARCHIVE_WARN )
 					return 1;
 			}
+
+			processedEntries++;
+			emit progress( processedEntries * 100 / entryCount );
 
 			r = archive_write_finish_entry( ext );
 			if ( r < ARCHIVE_OK )
