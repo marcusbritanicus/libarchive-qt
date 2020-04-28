@@ -339,6 +339,7 @@ bool LibArchiveQt::doCreateArchive() {
 	int len;
 	int fd;
 	int r = ARCHIVE_OK;
+	int errors = 0;
 
 	a = archive_write_new();
 
@@ -357,11 +358,16 @@ bool LibArchiveQt::doCreateArchive() {
 	}
 
 	Q_FOREACH( QString file, inputList ) {
+		if ( stat( file.toUtf8().constData(), &st ) != 0 ) {
+			errors++;
+			qDebug() << file << strerror( errno );
+			continue;
+		}
+
 		char *filename;
 		filename = new char[ file.count() + 1 ];
-		strcpy( filename, file.toUtf8().data() );
+		strcpy( filename, QString( file ).toUtf8().data() );
 
-		stat( filename, &st );
 		entry = archive_entry_new();
 		archive_entry_set_pathname( entry, filename );
 		archive_entry_set_size( entry, st.st_size );
@@ -384,7 +390,7 @@ bool LibArchiveQt::doCreateArchive() {
 	archive_write_close( a );
 	archive_write_free( a );
 
-	return true;
+	return ( errors ? false : true );
 };
 
 bool LibArchiveQt::doExtractArchive() {
