@@ -6,6 +6,10 @@ INCLUDEPATH += . ../lib/
 
 LIBS += ../lib/libarchiveqt5.a -larchive -lz -lbz2 -llzma
 
+contains ( DEFINES, HAVE_LZLIB ) {
+	LIBS += -llz
+}
+
 # Input
 SOURCES += example.cpp
 
