@@ -1,3 +1,8 @@
+Version 2.0.0
+	- Support for adding paths relative to some path
+	- Progress support for compressing and extracting archives
+	- Check inputList for non-existent files
+
 Version 1.1.1
     - Single member extraction bug fix
     - List archive bug fix
