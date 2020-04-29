@@ -276,12 +276,20 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 				}
 
 				case RelativeToHome: {
-					inputList[ info.absoluteFilePath() ] = QDir::home().relativeFilePath( info.absoluteFilePath() );
+					QString relPath = QDir::home().relativeFilePath( info.absoluteFilePath() );
+					while ( relPath.startsWith( "../" ) )
+						relPath.remove( 0, 3 );
+
+					inputList[ info.absoluteFilePath() ] = relPath;
 					break;
 				}
 
 				case RelativeToCurrent: {
-					inputList[ info.absoluteFilePath() ] = QDir::current().relativeFilePath( info.absoluteFilePath() );
+					QString relPath = QDir::current().relativeFilePath( info.absoluteFilePath() );
+					while ( relPath.startsWith( "../" ) )
+						relPath.remove( 0, 3 );
+
+					inputList[ info.absoluteFilePath() ] = relPath;
 					break;
 				}
 
@@ -289,17 +297,29 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 					/* If @src is empty, set it to root */
 					src = ( src.isEmpty() ? "/" : src );
 
-					inputList[ info.absoluteFilePath() ] = QDir( src ).relativeFilePath( info.absoluteFilePath() );
+					QString relPath = QDir( src ).relativeFilePath( info.absoluteFilePath() );
+					while ( relPath.startsWith( "../" ) )
+						relPath.remove( 0, 3 );
+
+					inputList[ info.absoluteFilePath() ] = relPath;
 					break;
 				}
 
 				case CommonRelativePath: {
-					inputList[ info.absoluteFilePath() ] = QDir( common ).relativeFilePath( info.absoluteFilePath() );
+					QString relPath = QDir( common ).relativeFilePath( info.absoluteFilePath() );
+					while ( relPath.startsWith( "../" ) )
+						relPath.remove( 0, 3 );
+
+					inputList[ info.absoluteFilePath() ] = relPath;
 					break;
 				}
 
 				default: {
-					inputList[ info.absoluteFilePath() ] = QDir::current().relativeFilePath( info.absoluteFilePath() );
+					QString relPath = QDir::current().relativeFilePath( info.absoluteFilePath() );
+					while ( relPath.startsWith( "../" ) )
+						relPath.remove( 0, 3 );
+
+					inputList[ info.absoluteFilePath() ] = relPath;
 					break;
 				}
 			}

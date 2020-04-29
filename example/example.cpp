@@ -138,7 +138,7 @@ int main( int argc, char** argv ) {
 		// Write archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
 
-		arc->updateInputFiles( app.arguments().mid( 3 ) );
+		arc->updateInputFiles( app.arguments().mid( 3 ), LibArchiveQt::RelativeToCurrent );
 		arc->createArchive();
 		arc->waitForFinished();
 
@@ -184,12 +184,16 @@ int main( int argc, char** argv ) {
 		// List archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
 
-		Q_FOREACH(  ArchiveEntry *ae, arc->listArchive() ) {
+		int length = 0;
+		Q_FOREACH( ArchiveEntry *ae, arc->listArchive() )
+			length = ( ae->name.length() > length ? ae->name.length() : length );
+
+		Q_FOREACH( ArchiveEntry *ae, arc->listArchive() ) {
 			if ( ae->type == AE_IFREG )
-				qDebug() << ae->name.toLocal8Bit().data() << formatSize( ae->size ).toLocal8Bit().data();
+				qDebug() << ae->name.rightJustified( length + 10 ).toLocal8Bit().data() << "  " << formatSize( ae->size ).toLocal8Bit().data();
 
 			else
-				qDebug() << ae->name.toLocal8Bit().data();
+				qDebug() << ae->name.rightJustified( length + 10 ).toLocal8Bit().data();
 		}
 
 		arc->waitForFinished();
