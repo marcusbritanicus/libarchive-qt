@@ -388,6 +388,7 @@ bool LibArchiveQt::doCreateArchive() {
 		processed++;
 
 		emit progress( processed * 100 / inputList.count() );
+		qApp->processEvents();
 	}
 
 	archive_write_close( a );
@@ -892,6 +893,8 @@ bool LibArchiveQt::doExtractArchive() {
 
 			processedEntries++;
 			emit progress( processedEntries * 100 / entryCount );
+
+			qApp->processEvents();
 
 			r = archive_write_finish_entry( ext );
 			if ( r < ARCHIVE_OK )
