@@ -107,7 +107,7 @@ inline static QString baseName( QString path ) {
 	return basePth;
 };
 
-bool exists( QString path ) {
+inline static bool exists( QString path ) {
 
 	return not access( path.toLocal8Bit().constData(), F_OK );
 }
@@ -130,6 +130,33 @@ inline static int mkpath( QString path, mode_t mode ) {
 
 	return mkdir( path.toLocal8Bit().constData(), mode );
 };
+
+inline static QString longestPath( QStringList &dirs ) {
+
+	/* Get shortest path: Shortest path is the one with least number of '/' */
+	QString shortest = dirs.at( 0 );
+	int count = 10240;
+	Q_FOREACH( QString dir, dirs ) {
+		if ( dir.count( "/" ) < count ) {
+			count = dir.count( "/" );
+			shortest = dir;
+		}
+	}
+
+	/* Remove the trailing '/' */
+	if ( shortest.endsWith( "/" ) )
+		shortest.chop( 1 );
+
+	QFileInfo sDir( shortest );
+ 	while ( dirs.filter( sDir.absoluteFilePath() ).count() != dirs.count() ) {
+		if ( sDir.absoluteFilePath() == "/" )
+			break;
+
+		sDir = QFileInfo( sDir.absolutePath() );
+	}
+
+	return sDir.absoluteFilePath();
+}
 
 LibArchiveQt::LibArchiveQt( QString archive ) {
 
@@ -223,18 +250,61 @@ int LibArchiveQt::exitStatus() {
 	return mExitStatus;
 };
 
-void LibArchiveQt::updateInputFiles( QStringList inFiles ) {
+void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFileMode inMode ) {
 
+	/* First get the absolute filenames */
+	QStringList paths;
+	Q_FOREACH( QString file, inFiles )
+		paths << QFileInfo( file ).absoluteFilePath();
+
+	QString common = longestPath( paths );
 	Q_FOREACH( QString file, inFiles ) {
 		if ( isDir( file ) )
-			inputList.append( recDirWalk( file ) );
+			updateInputFiles( recDirWalk( file ), inMode );
 
-		else
-			inputList.append( file );
+		else {
+			QFileInfo info( file );
+			switch ( inMode ) {
+				case AbsolutePath: {
+					inputList[ info.absoluteFilePath() ] = info.absoluteFilePath();
+					break;
+				}
+
+				case RelativeToRoot: {
+					inputList[ info.absoluteFilePath() ] = QDir::root().relativeFilePath( info.absoluteFilePath() );
+					break;
+				}
+
+				case RelativeToHome: {
+					inputList[ info.absoluteFilePath() ] = QDir::home().relativeFilePath( info.absoluteFilePath() );
+					break;
+				}
+
+				case RelativeToCurrent: {
+					inputList[ info.absoluteFilePath() ] = QDir::current().relativeFilePath( info.absoluteFilePath() );
+					break;
+				}
+
+				case RelativeToWorkDir: {
+					/* If @src is empty, set it to root */
+					src = ( src.isEmpty() ? "/" : src );
+
+					inputList[ info.absoluteFilePath() ] = QDir( src ).relativeFilePath( info.absoluteFilePath() );
+					break;
+				}
+
+				case CommonRelativePath: {
+					inputList[ info.absoluteFilePath() ] = QDir( common ).relativeFilePath( info.absoluteFilePath() );
+					break;
+				}
+
+				default: {
+					inputList[ info.absoluteFilePath() ] = QDir::current().relativeFilePath( info.absoluteFilePath() );
+					break;
+				}
+			}
+		}
 	}
-
-	inputList.sort();
-	inputList.removeDuplicates();
 };
 
 void LibArchiveQt::setWorkingDir( QString wDir ) {
@@ -354,20 +424,21 @@ bool LibArchiveQt::doCreateArchive() {
 		return false;
 	}
 
-	Q_FOREACH( QString file, inputList ) {
-		printf( "Compressing %s: ", file.toUtf8().constData() );
-		if ( stat( file.toUtf8().constData(), &st ) != 0 ) {
+	Q_FOREACH( QString file, inputList.keys() ) {
+		char *filename = new char[ file.count() + 1 ];
+		strcpy( filename, file.toUtf8().data() );
+
+		if ( stat( filename, &st ) != 0 ) {
 			errors++;
-			printf( "%s\n", strerror( errno ) );
+			printf( "[Error %d]: %s: %s\n", errno, strerror( errno ), filename );
 			continue;
 		}
 
-		char *filename;
-		filename = new char[ file.count() + 1 ];
-		strcpy( filename, QDir( src ).relativeFilePath( file ).toUtf8().data() );
+		char *arcPath = new char[ file.count() + 1 ];
+		strcpy( arcPath, inputList.value( file ).toUtf8().data() );
 
 		entry = archive_entry_new();
-		archive_entry_set_pathname( entry, filename );
+		archive_entry_set_pathname( entry, arcPath );
 		archive_entry_set_size( entry, st.st_size );
 		archive_entry_set_filetype( entry, st.st_mode );
 		archive_entry_set_perm( entry, st.st_mode );
@@ -384,7 +455,6 @@ bool LibArchiveQt::doCreateArchive() {
 		close( fd );
 		archive_entry_free( entry );
 
-		printf( "[Done]\n" );
 		processed++;
 
 		emit progress( processed * 100 / inputList.count() );

@@ -55,10 +55,20 @@ class LibArchiveQt : public QThread {
 	Q_OBJECT
 
 	public:
+		/* Used with updateInputFiles, this helps libarchive to choose how to handle paths */
+		enum InputFileMode {
+			AbsolutePath = 0x703857,	// Use absolute file paths - Discouraged
+			RelativeToRoot,				// All paths will be relative to '/' - Useful for packaging of installed files
+			RelativeToHome,				// Files will have paths relative to home folder - good for saving config files
+			RelativeToCurrent,			// The paths will be relative to the current path - Useful for archiving files in current dir [Default]
+			RelativeToWorkDir,			// Set archive paths of the file relative to @src - @src should be set before calling updateInputFiles
+			CommonRelativePath,			// Added files will have paths relative to path common to all files - Costly for large number of files
+		};
+
 		LibArchiveQt( QString );
 
-		// Convinience Functions
-		void updateInputFiles( QStringList );
+		// Convenience Functions
+		void updateInputFiles( QStringList, LibArchiveQt::InputFileMode inMode = LibArchiveQt::RelativeToCurrent );
 		void setWorkingDir( QString );
 		void setDestination( QString );
 		void waitForFinished();
@@ -113,7 +123,7 @@ class LibArchiveQt : public QThread {
 
 		QString archiveName;
 
-		QStringList inputList;
+		QHash<QString, QString> inputList;
 		QString dest;
 		QString src;
 
