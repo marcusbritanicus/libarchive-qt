@@ -5,7 +5,7 @@ lessThan( QT_MAJOR_VERSION, 5 ) {
 	TARGET = archiveqt
 }
 
-VERSION   = 1.1.0
+VERSION   = 2.0.0
 
 DEPENDPATH 	+= . MimeHandler StandardPaths
 INCLUDEPATH	+= . MimeHandler StandardPaths
