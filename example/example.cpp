@@ -42,11 +42,11 @@ QString formatSize( qint64 num ) {
 	const qint64 gb = 1024 * mb;
 	const qint64 tb = 1024 * gb;
 
-	if ( num >= tb ) total = QString( "%1 TiB" ).arg( QString::number( qreal( num ) / tb, 'f', 3 ) );
+	if ( num >= tb )      total = QString( "%1 TiB" ).arg( QString::number( qreal( num ) / tb, 'f', 3 ) );
 	else if ( num >= gb ) total = QString( "%1 GiB" ).arg( QString::number( qreal( num ) / gb, 'f', 2 ) );
 	else if ( num >= mb ) total = QString( "%1 MiB" ).arg( QString::number( qreal( num ) / mb, 'f', 1 ) );
 	else if ( num >= kb ) total = QString( "%1 KiB" ).arg( QString::number( qreal( num ) / kb,'f',1 ) );
-	else total = QString( "%1 byte%2" ).arg( num ).arg( num > 1 ? "s": "" );
+	else                  total = QString( "%1 byte%2" ).arg( num ).arg( num > 1 ? "s": "" );
 
 	return total;
 };
@@ -138,7 +138,7 @@ int main( int argc, char** argv ) {
 		// Write archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
 
-		arc->updateInputFiles( app.arguments().mid( 3 ), LibArchiveQt::RelativeToCurrent );
+		arc->updateInputFiles( app.arguments().mid( 3 ), LibArchiveQt::RelativeToHome );
 		arc->createArchive();
 		arc->waitForFinished();
 

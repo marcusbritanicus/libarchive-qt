@@ -71,7 +71,8 @@ inline static QStringList recDirWalk( QString path ) {
 	QDirIterator it( path, QDir::AllEntries | QDir::System | QDir::NoDotAndDotDot | QDir::Hidden, QDirIterator::Subdirectories );
 	while ( it.hasNext() ) {
 		it.next();
-		fileList.append( it.fileInfo().filePath() );
+		if ( it.fileInfo().isFile() )
+			fileList.append( it.fileInfo().filePath() );
 	}
 
 	return fileList;
@@ -133,13 +134,17 @@ inline static int mkpath( QString path, mode_t mode ) {
 
 inline static QString longestPath( QStringList &dirs ) {
 
+	QStringList paths;
+	Q_FOREACH( QString file, dirs )
+		paths << QFileInfo( file ).absoluteFilePath();
+
 	/* Get shortest path: Shortest path is the one with least number of '/' */
-	QString shortest = dirs.at( 0 );
+	QString shortest = paths.at( 0 );
 	int count = 10240;
-	Q_FOREACH( QString dir, dirs ) {
-		if ( dir.count( "/" ) < count ) {
-			count = dir.count( "/" );
-			shortest = dir;
+	Q_FOREACH( QString path, paths ) {
+		if ( path.count( "/" ) < count ) {
+			count = path.count( "/" );
+			shortest = path;
 		}
 	}
 
@@ -148,7 +153,7 @@ inline static QString longestPath( QStringList &dirs ) {
 		shortest.chop( 1 );
 
 	QFileInfo sDir( shortest );
- 	while ( dirs.filter( sDir.absoluteFilePath() ).count() != dirs.count() ) {
+ 	while ( paths.filter( sDir.absoluteFilePath() ).count() != paths.count() ) {
 		if ( sDir.absoluteFilePath() == "/" )
 			break;
 
@@ -156,7 +161,7 @@ inline static QString longestPath( QStringList &dirs ) {
 	}
 
 	return sDir.absoluteFilePath();
-}
+};
 
 LibArchiveQt::LibArchiveQt( QString archive ) {
 
@@ -253,11 +258,7 @@ int LibArchiveQt::exitStatus() {
 void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFileMode inMode ) {
 
 	/* First get the absolute filenames */
-	QStringList paths;
-	Q_FOREACH( QString file, inFiles )
-		paths << QFileInfo( file ).absoluteFilePath();
-
-	QString common = longestPath( paths );
+	QString common = longestPath( inFiles );
 	Q_FOREACH( QString file, inFiles ) {
 		if ( isDir( file ) )
 			updateInputFiles( recDirWalk( file ), inMode );
@@ -266,12 +267,12 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 			QFileInfo info( file );
 			switch ( inMode ) {
 				case AbsolutePath: {
-					inputList[ info.absoluteFilePath() ] = info.absoluteFilePath();
+					inputList.insert( info.absoluteFilePath(), info.absoluteFilePath() );
 					break;
 				}
 
 				case RelativeToRoot: {
-					inputList[ info.absoluteFilePath() ] = QDir::root().relativeFilePath( info.absoluteFilePath() );
+					inputList.insert( info.absoluteFilePath(), QDir::root().relativeFilePath( info.absoluteFilePath() ) );
 					break;
 				}
 
@@ -280,7 +281,7 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 					while ( relPath.startsWith( "../" ) )
 						relPath.remove( 0, 3 );
 
-					inputList[ info.absoluteFilePath() ] = relPath;
+					inputList.insert( info.absoluteFilePath(), relPath );
 					break;
 				}
 
@@ -289,7 +290,7 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 					while ( relPath.startsWith( "../" ) )
 						relPath.remove( 0, 3 );
 
-					inputList[ info.absoluteFilePath() ] = relPath;
+					inputList.insert( info.absoluteFilePath(), relPath );
 					break;
 				}
 
@@ -301,7 +302,7 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 					while ( relPath.startsWith( "../" ) )
 						relPath.remove( 0, 3 );
 
-					inputList[ info.absoluteFilePath() ] = relPath;
+					inputList.insert( info.absoluteFilePath(), relPath );
 					break;
 				}
 
@@ -310,7 +311,7 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 					while ( relPath.startsWith( "../" ) )
 						relPath.remove( 0, 3 );
 
-					inputList[ info.absoluteFilePath() ] = relPath;
+					inputList.insert( info.absoluteFilePath(), relPath );
 					break;
 				}
 
@@ -319,7 +320,7 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 					while ( relPath.startsWith( "../" ) )
 						relPath.remove( 0, 3 );
 
-					inputList[ info.absoluteFilePath() ] = relPath;
+					inputList.insert( info.absoluteFilePath(), relPath );
 					break;
 				}
 			}
