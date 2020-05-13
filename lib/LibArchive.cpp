@@ -257,8 +257,10 @@ int LibArchiveQt::exitStatus() {
 
 void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFileMode inMode ) {
 
+	if ( not inFiles.count() )
+		return;
+
 	/* First get the absolute filenames */
-	QString common = longestPath( inFiles );
 	Q_FOREACH( QString file, inFiles ) {
 		if ( isDir( file ) )
 			updateInputFiles( recDirWalk( file ), inMode );
@@ -307,6 +309,13 @@ void LibArchiveQt::updateInputFiles( QStringList inFiles, LibArchiveQt::InputFil
 				}
 
 				case CommonRelativePath: {
+					QString common;
+					if ( inFiles.count() == 1 )
+						common = dirName( inFiles.at( 0 ) );
+
+					else
+						common = longestPath( inFiles );
+
 					QString relPath = QDir( common ).relativeFilePath( info.absoluteFilePath() );
 					while ( relPath.startsWith( "../" ) )
 						relPath.remove( 0, 3 );
