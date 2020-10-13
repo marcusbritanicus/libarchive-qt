@@ -48,10 +48,9 @@ unix {
 
 	INSTALLS	+= target includes data pc
 	CONFIG		+= no_install_prl link_pkgconfig
-	contains(DEFINES, LIB64): target.path = $$INSTALL_PREFIX/lib64
-	else: target.path = $$INSTALL_PREFIX/lib
+	contains(DEFINES, LIB64): target.path = $$PREFIX/lib64
+	else: target.path = $$PREFIX/lib
 
-	target.path			= $$PREFIX/lib/
 	includes.files		= libarchiveqt.h
 	includes.path		= $$PREFIX/include/
 
