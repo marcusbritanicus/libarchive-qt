@@ -362,8 +362,14 @@ void LibArchiveQt::waitForFinished() {
 		return;
 
 	QEventLoop eventLoop;
-	connect(this, &LibArchiveQt::jobFailed, &eventLoop, &QEventLoop::quit);
-	connect(this, &LibArchiveQt::jobComplete, &eventLoop, &QEventLoop::quit);
+	#if QT_VERSION >= 0x050000
+		connect(this, &LibArchiveQt::jobFailed, &eventLoop, &QEventLoop::quit);
+		connect(this, &LibArchiveQt::jobComplete, &eventLoop, &QEventLoop::quit);
+	#else
+		connect(this, SIGNAL( jobFailed() ), &eventLoop, SLOT( quit() ) );
+		connect(this, SIGNAL( jobComplete() ), &eventLoop, SLOT( quit() ) );
+	#endif
+
 	eventLoop.exec();
 };
 
