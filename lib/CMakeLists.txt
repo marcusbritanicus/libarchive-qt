@@ -39,7 +39,6 @@ set( archiveqt_HDRS
 	LibBZip2.hpp
 	LibGZip.hpp
 	lz4dec.h
-	LibLZip.hpp
 	libarchiveqt.h
 )
 
@@ -52,6 +51,19 @@ set( archiveqt_SRCS
 	lz4dec.c
 	LibLZip.cpp
 )
+
+if ( USE_LZLIB )
+    list(
+		APPEND
+		archiveqt_HDRS
+		LibLZip.hpp
+	)
+    list(
+		APPEND
+		archiveqt_SRCS
+		LibLZip.cpp
+	)
+endif()
 
 if ( USEQT STREQUAL "Qt4" OR USEQT STREQUAL "4" )
 	include_directories( MimeHandler StandardPaths )
