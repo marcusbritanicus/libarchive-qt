@@ -132,3 +132,4 @@ endif()
 
 install( TARGETS mylib_shared EXPORT LIBRARY )
 install( TARGETS mylib_static EXPORT LIBRARY )
+install( FILES libarchiveqt.h DESTINATION include/ )
