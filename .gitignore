@@ -2,5 +2,6 @@ libarchiveqt*.so*
 libarchiveqt*.a
 Makefile*
 build
+.build
 .qmake.stash
 example/archiver
