@@ -2,8 +2,8 @@ project( ArchiveQt )
 cmake_minimum_required( VERSION 3.1 )
 
 add_definitions ( -Wall )
-if ( NOT DEFINED CMAKE_INSTALL_PREFIX )
-    set( CMAKE_INSTALL_PREFIX /usr )
+if ( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
+    set( CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Location for installing the project" FORCE )
 endif()
 
 option( USE_LZLIB "Have lzlib installed in your system" OFF )
