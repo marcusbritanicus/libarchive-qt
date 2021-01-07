@@ -2,7 +2,9 @@ project( ArchiveQt )
 cmake_minimum_required( VERSION 3.1 )
 
 add_definitions ( -Wall )
-set( CMAKE_INSTALL_PREFIX /usr )
+if ( NOT DEFINED CMAKE_INSTALL_PREFIX )
+    set( CMAKE_INSTALL_PREFIX /usr )
+endif()
 
 option( USE_LZLIB "Have lzlib installed in your system" OFF )
 set( USEQT "Qt5" CACHE STRING "Build using particular version of Qt" )
@@ -17,11 +19,9 @@ else()
     message( FATAL_ERROR "Unsupported version of Qt specified. Choose between Qt4, Qt5 and Qt6." )
 endif()
 
-if ( USE_LZLIB )
-    add_compile_definitions(HAVE_LZLIB)
-endif()
-
 add_subdirectory( lib )
 add_subdirectory( example )
 
 add_dependencies( archiver mylib_static )
+
+message( "Installing to ${CMAKE_INSTALL_PREFIX}" )

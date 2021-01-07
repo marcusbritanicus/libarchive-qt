@@ -13,7 +13,9 @@ set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_BUILD_TYPE Release )
 
 add_definitions ( -Wall )
-set( CMAKE_INSTALL_PREFIX /usr )
+if ( NOT DEFINED CMAKE_INSTALL_PREFIX )
+    set( CMAKE_INSTALL_PREFIX /usr )
+endif()
 
 set( CMAKE_AUTOMOC ON )
 set( CMAKE_AUTORCC ON )
@@ -52,18 +54,20 @@ set( archiveqt_SRCS
 	LibLZip.cpp
 )
 
-if ( USE_LZLIB )
-    list(
-		APPEND
-		archiveqt_HDRS
-		LibLZip.hpp
-	)
-    list(
-		APPEND
-		archiveqt_SRCS
-		LibLZip.cpp
-	)
-endif()
+# if ( USE_LZLIB )
+#     message( "Compiling with lzlib support ${USE_LZLIB}" )
+#     message( "Including LibLZip sources" )
+#     list(
+# 		APPEND
+# 		archiveqt_HDRS
+# 		LibLZip.hpp
+# 	)
+#     list(
+# 		APPEND
+# 		archiveqt_SRCS
+# 		LibLZip.cpp
+# 	)
+# endif()
 
 if ( USEQT STREQUAL "Qt4" OR USEQT STREQUAL "4" )
 	include_directories( MimeHandler StandardPaths )
@@ -120,26 +124,26 @@ set_target_properties( mylib_shared PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR
 
 if ( USEQT STREQUAL "Qt4" )
 	set_target_properties( mylib_shared PROPERTIES OUTPUT_NAME archiveqt4 )
-	target_link_libraries( mylib_shared  Qt4::QtCore archive z bz2 lzma lz )
+	target_link_libraries( mylib_shared  Qt4::QtCore archive z bz2 lzma )
 elseif ( USEQT STREQUAL "Qt5" )
 	set_target_properties( mylib_shared PROPERTIES OUTPUT_NAME archiveqt5 )
-	target_link_libraries( mylib_shared  Qt5::Core archive z bz2 lzma lz )
+	target_link_libraries( mylib_shared  Qt5::Core archive z bz2 lzma )
 elseif ( USEQT STREQUAL "Qt6" )
 	set_target_properties( mylib_shared PROPERTIES OUTPUT_NAME archiveqt6 )
-	target_link_libraries( mylib_shared  Qt::Core archive z bz2 lzma lz )
+	target_link_libraries( mylib_shared  Qt::Core archive z bz2 lzma )
 endif()
 
 
 add_library( mylib_static STATIC $<TARGET_OBJECTS:archiveqt> )
 if ( USEQT STREQUAL "Qt4" )
 	set_target_properties( mylib_static PROPERTIES OUTPUT_NAME archiveqt4 )
-	target_link_libraries( mylib_static  Qt4::QtCore archive z bz2 lzma lz )
+	target_link_libraries( mylib_static  Qt4::QtCore archive z bz2 lzma )
 elseif ( USEQT STREQUAL "Qt5" )
 	set_target_properties( mylib_static PROPERTIES OUTPUT_NAME archiveqt5 )
-	target_link_libraries( mylib_static  Qt5::Core archive z bz2 lzma lz )
+	target_link_libraries( mylib_static  Qt5::Core archive z bz2 lzma )
 elseif ( USEQT STREQUAL "Qt6" )
 	set_target_properties( mylib_static PROPERTIES OUTPUT_NAME archiveqt6 )
-	target_link_libraries( mylib_static  Qt::Core archive z bz2 lzma lz )
+	target_link_libraries( mylib_static  Qt::Core archive z bz2 lzma )
 endif()
 
 install( TARGETS mylib_shared EXPORT LIBRARY )

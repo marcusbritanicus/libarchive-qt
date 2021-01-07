@@ -14,7 +14,9 @@ set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_BUILD_TYPE Release )
 
 add_definitions ( -Wall )
-set( CMAKE_INSTALL_PREFIX /usr )
+if ( NOT DEFINED CMAKE_INSTALL_PREFIX )
+    set( CMAKE_INSTALL_PREFIX /usr )
+endif()
 
 set( CMAKE_AUTOMOC ON )
 set( CMAKE_AUTORCC ON )

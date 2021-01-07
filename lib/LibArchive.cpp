@@ -35,9 +35,9 @@ extern "C" {
 	#include "lz4dec.h"
 }
 
-#ifdef HAVE_LZLIB
-	#include "LibLZip.hpp"
-#endif
+// #ifdef HAVE_LZLIB
+//	#include "LibLZip.hpp"
+// #endif
 
 // SystemWide Headers
 #include <errno.h>
@@ -521,23 +521,23 @@ bool LibArchiveQt::doExtractArchive() {
 		if ( mType == mimeDb.mimeTypeForFile( "file.lz" ) ) {
 			/* LZip Extractor */
 
-			#ifdef HAVE_LZLIB
-				dest = archiveName;
-				dest.chop( 3 );
-
-				int i = 0;
-				while ( exists( dest ) ) {
-					i++;
-
-					dest = archiveName;
-					dest.chop( 3 );
-
-					dest = dirName( dest )  + QString( "(%1) - " ).arg( i ) + baseName( dest );
-				}
-
-				NBLZip *lzExt = new NBLZip( archiveName, dest );
-				return lzExt->extract();
-			#else
+			// #ifdef HAVE_LZLIB
+			// 	dest = archiveName;
+			// 	dest.chop( 3 );
+			//
+			// 	int i = 0;
+			// 	while ( exists( dest ) ) {
+			// 		i++;
+			//
+			// 		dest = archiveName;
+			// 		dest.chop( 3 );
+			//
+			// 		dest = dirName( dest )  + QString( "(%1) - " ).arg( i ) + baseName( dest );
+			// 	}
+			//
+			// 	NBLZip *lzExt = new NBLZip( archiveName, dest );
+			// 	return lzExt->extract();
+			// #else
 				QString lzip;
 
 				#if QT_VERSION >= 0x060000
@@ -632,7 +632,7 @@ bool LibArchiveQt::doExtractArchive() {
 				archive_write_free( ext );
 
 				return true;
-			#endif
+			// #endif
 		}
 
 		else if ( mType == mimeDb.mimeTypeForFile( "file.uu" ) ) {
