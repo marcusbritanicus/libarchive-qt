@@ -51,23 +51,7 @@ set( archiveqt_SRCS
 	LibBZip2.cpp
 	LibGZip.cpp
 	lz4dec.c
-	LibLZip.cpp
 )
-
-# if ( USE_LZLIB )
-#     message( "Compiling with lzlib support ${USE_LZLIB}" )
-#     message( "Including LibLZip sources" )
-#     list(
-# 		APPEND
-# 		archiveqt_HDRS
-# 		LibLZip.hpp
-# 	)
-#     list(
-# 		APPEND
-# 		archiveqt_SRCS
-# 		LibLZip.cpp
-# 	)
-# endif()
 
 if ( USEQT STREQUAL "Qt4" OR USEQT STREQUAL "4" )
 	include_directories( MimeHandler StandardPaths )

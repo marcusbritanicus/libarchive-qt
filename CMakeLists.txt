@@ -6,7 +6,6 @@ if ( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
     set( CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Location for installing the project" FORCE )
 endif()
 
-option( USE_LZLIB "Have lzlib installed in your system" OFF )
 set( USEQT "Qt5" CACHE STRING "Build using particular version of Qt" )
 
 if ( USEQT STREQUAL "Qt4" OR USEQT STREQUAL "4" )

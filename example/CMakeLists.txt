@@ -37,11 +37,11 @@ set( archiver_SRCS
 add_executable( archiver ${archiver_SRCS}  )
 
 if ( USEQT STREQUAL "Qt4" )
-	target_link_libraries( archiver  Qt4::QtCore ${CMAKE_CURRENT_BINARY_DIR}/../lib/libarchiveqt4.a archive z bz2 lzma lz )
+	target_link_libraries( archiver  Qt4::QtCore ${CMAKE_CURRENT_BINARY_DIR}/../lib/libarchiveqt4.a archive z bz2 lzma )
 elseif ( USEQT STREQUAL "Qt5" )
-	target_link_libraries( archiver  Qt5::Core ${CMAKE_CURRENT_BINARY_DIR}/../lib/libarchiveqt5.a archive z bz2 lzma lz )
+	target_link_libraries( archiver  Qt5::Core ${CMAKE_CURRENT_BINARY_DIR}/../lib/libarchiveqt5.a archive z bz2 lzma )
 elseif ( USEQT STREQUAL "Qt6" )
-	target_link_libraries( archiver  Qt::Core ${CMAKE_CURRENT_BINARY_DIR}/../lib/libarchiveqt6.a archive z bz2 lzma lz )
+	target_link_libraries( archiver  Qt::Core ${CMAKE_CURRENT_BINARY_DIR}/../lib/libarchiveqt6.a archive z bz2 lzma )
 endif()
 
 

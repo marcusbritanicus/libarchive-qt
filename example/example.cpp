@@ -138,7 +138,7 @@ int main( int argc, char** argv ) {
 		// Write archive code
 		LibArchiveQt *arc = new LibArchiveQt( argv[ 2 ] );
 
-		arc->updateInputFiles( app.arguments().mid( 3 ), LibArchiveQt::RelativeToHome );
+		arc->updateInputFiles( app.arguments().mid( 3 ), LibArchiveQt::RelativeToCurrent );
 		arc->createArchive();
 		arc->waitForFinished();
 
