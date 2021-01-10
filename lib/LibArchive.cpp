@@ -172,9 +172,89 @@ LibArchiveQt::LibArchiveQt( QString archive ) {
 	setFilterFormat( mimeDb.mimeTypeForFile( archiveName ) );
 };
 
-QString LibArchiveQt::suffix() {
+QString LibArchiveQt::suffix( QString archiveName ) {
 
-	return mFormatStr;
+	QMimeType mType = mimeDb.mimeTypeForFile( archiveName );
+
+	if ( mType == mimeDb.mimeTypeForFile( "file.cpio" ) )
+		return ".cpio";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.shar" ) )
+		return ".shar";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar" ) )
+		return ".tar";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.gz" ) )
+		return ( archiveName.endsWith( ".tar.gz" ) ? ".tar.gz" : ".tgz" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.grz" ) )
+		return ( archiveName.endsWith( ".tar.grz" ) ? ".tar.grz" : ".tgrz" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.xz" ) )
+		return ( archiveName.endsWith( ".tar.xz" ) ? ".tar.xz" : ".txz" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lzo" ) )
+		return ( archiveName.endsWith( ".tar.lzo" ) ? ".tar.lzo" : ".tlzo" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lzma" ) )
+		return ( archiveName.endsWith( ".tar.lzma" ) ? ".tar.lzma" : ".tlzma" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lz" ) )
+		return ( archiveName.endsWith( ".tar.lz" ) ? ".tar.lz" : ".tlz" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lrz" ) )
+		return ( archiveName.endsWith( ".tar.lrz" ) ? ".tar.lrz" : ".tlrz" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lz4" ) )
+		return ( archiveName.endsWith( ".tar.lz4" ) ? ".tar.lz4" : ".tlzo4" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.bz2" ) )
+		return ( archiveName.endsWith( ".tar.bz2" ) ? ".tar.bz2" : ".tbz2" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.Z" ) )
+		return ( archiveName.endsWith( ".tar.Z" ) ? ".tar.Z" : ".tZ" );
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.iso" ) )
+		return ".iso";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.zip" ) )
+		return ".zip";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.ar" ) )
+		return ".ar";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.xar" ) )
+		return ".xar";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.7z" ) )
+		return ".7z";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.lz" ) )
+		return ".lz";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.lz4" ) )
+		return ".lz4";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.uu" ) )
+		return ".uu";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.lzo" ) )
+		return ".lzo";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.gz" ) )
+		return ".gz";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.bz2" ) )
+		return ".bz2";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.lzma" ) )
+		return ".lzma";
+
+	else if ( mType == mimeDb.mimeTypeForFile( "file.xz" ) )
+		return ".xz";
+
+	return "";
 };
 
 void LibArchiveQt::createArchive() {
@@ -1186,70 +1266,60 @@ void LibArchiveQt::setFilterFormat( QMimeType mType ) {
 	if ( mType == mimeDb.mimeTypeForFile( "file.cpio" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_NONE;
 		mArchiveFormat = ARCHIVE_FORMAT_CPIO;
-		mFormatStr = ".cpio";
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.shar" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_NONE;
 		mArchiveFormat = ARCHIVE_FORMAT_SHAR;
-		mFormatStr = ".shar";
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_NONE;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ".tar";
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.gz" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_GZIP;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.gz" ) ? ".tar.gz" : ".tgz" );
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.grz" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_GRZIP;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.grz" ) ? ".tar.grz" : ".tgrz" );
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.xz" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_XZ;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.xz" ) ? ".tar.xz" : ".txz" );
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lzo" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LZOP;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.lzo" ) ? ".tar.lzo" : ".tlzo" );
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lzma" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LZMA;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.lzma" ) ? ".tar.lzma" : ".tlzma" );
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lz" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LZIP;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.lz" ) ? ".tar.lz" : ".tlz" );
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lrz" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LRZIP;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.lrz" ) ? ".tar.lrz" : ".tlrz" );
 		archiveType = Container;
 	}
 
@@ -1257,7 +1327,6 @@ void LibArchiveQt::setFilterFormat( QMimeType mType ) {
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.lz4" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LZ4;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.lz4" ) ? ".tar.lz4" : ".tlzo4" );
 		archiveType = Container;
 	}
 	#endif
@@ -1265,56 +1334,48 @@ void LibArchiveQt::setFilterFormat( QMimeType mType ) {
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.bz2" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_BZIP2;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.bz2" ) ? ".tar.bz2" : ".tbz2" );
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.tar.Z" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_COMPRESS;
 		mArchiveFormat = ARCHIVE_FORMAT_TAR;
-		mFormatStr = ( archiveName.endsWith( ".tar.Z" ) ? ".tar.Z" : ".tZ" );
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.iso" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_NONE;
 		mArchiveFormat = ARCHIVE_FORMAT_ISO9660;
-		mFormatStr = ".iso";
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.zip" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_NONE;
 		mArchiveFormat = ARCHIVE_FORMAT_ZIP;
-		mFormatStr = ".zip";
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.ar" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_NONE;
 		mArchiveFormat = ARCHIVE_FORMAT_AR;
-		mFormatStr = ".ar";
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.xar" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_NONE;
 		mArchiveFormat = ARCHIVE_FORMAT_XAR;
-		mFormatStr = ".xar";
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.7z" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_NONE;
 		mArchiveFormat = ARCHIVE_FORMAT_7ZIP;
-		mFormatStr = ".7z";
 		archiveType = Container;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.lz" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LZIP;
 		mArchiveFormat = ARCHIVE_FORMAT_RAW;
-		mFormatStr = ".lz";
 		archiveType = Single;
 	}
 
@@ -1322,7 +1383,6 @@ void LibArchiveQt::setFilterFormat( QMimeType mType ) {
 	else if ( mType == mimeDb.mimeTypeForFile( "file.lz4" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LZ4;
 		mArchiveFormat = ARCHIVE_FORMAT_RAW;
-		mFormatStr = ".lz4";
 		archiveType = Single;
 	}
 	#endif
@@ -1330,42 +1390,36 @@ void LibArchiveQt::setFilterFormat( QMimeType mType ) {
 	else if ( mType == mimeDb.mimeTypeForFile( "file.uu" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_UU;
 		mArchiveFormat = ARCHIVE_FORMAT_RAW;
-		mFormatStr = ".uu";
 		archiveType = Single;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.lzo" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LZOP;
 		mArchiveFormat = ARCHIVE_FORMAT_RAW;
-		mFormatStr = ".lzo";
 		archiveType = Single;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.gz" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_GZIP;
 		mArchiveFormat = ARCHIVE_FORMAT_RAW;
-		mFormatStr = ".gz";
 		archiveType = Single;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.bz2" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_BZIP2;
 		mArchiveFormat = ARCHIVE_FORMAT_RAW;
-		mFormatStr = ".bz2";
 		archiveType = Single;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.lzma" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_LZMA;
 		mArchiveFormat = ARCHIVE_FORMAT_RAW;
-		mFormatStr = ".lzma";
 		archiveType = Single;
 	}
 
 	else if ( mType == mimeDb.mimeTypeForFile( "file.xz" ) ) {
 		mArchiveFilter = ARCHIVE_FILTER_XZ;
 		mArchiveFormat = ARCHIVE_FORMAT_RAW;
-		mFormatStr = ".xz";
 		archiveType = Single;
 	}
 

@@ -67,9 +67,6 @@ class LibArchiveQt : public QThread {
 
 		LibArchiveQt( QString );
 
-		/* Convenience function */
-		QString suffix();
-
 		// Convenience Functions
 		void updateInputFiles( QStringList, LibArchiveQt::InputFileMode inMode = LibArchiveQt::RelativeToCurrent );
 		void setWorkingDir( QString );
@@ -90,6 +87,9 @@ class LibArchiveQt : public QThread {
 
 		/* Exit status */
 		int exitStatus();
+
+		/* Convenience function */
+		static QString suffix( QString name );
 
 	private:
 		enum Mode {
@@ -123,7 +123,6 @@ class LibArchiveQt : public QThread {
 
 		int mArchiveFilter;
 		int mArchiveFormat;
-		QString mFormatStr;
 
 		QString archiveName;
 
