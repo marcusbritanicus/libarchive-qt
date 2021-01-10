@@ -7,7 +7,6 @@ Currently it supports the following archive/compression formats
  - Gzip
  - BZip2
  - LZMA2
- - LZip (needs lzlib or lzip binary)
  - LZ4
  - Cpio
  - AR
@@ -37,7 +36,6 @@ Those who know to add these and other filters to this library, are welcome to do
  - liblzma              (5.2.4)
  - libbz2               (1.0.8)
  - zlib                 (1.2.11)
- - lzlib (liblz1)       (1.11)
  - lzop (binary)        (1.04)
  - lzip (binary)        (1.21)
  - lrzip (binary)       (0.631)

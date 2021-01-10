@@ -88,8 +88,9 @@ class LibArchiveQt : public QThread {
 		/* Exit status */
 		int exitStatus();
 
-		/* Convenience function */
+		/* Convenience functions */
 		static QString suffix( QString name );
+		static QStringList supportedFormats();
 
 	private:
 		enum Mode {

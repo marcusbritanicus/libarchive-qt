@@ -1,3 +1,7 @@
+Version 2.1.0
+	- Added static member LibArchiveQt::suffix(...)
+	- Other minor improvements
+
 Version 2.0.0
 	- Support for adding paths relative to some path
 	- Progress support for compressing and extracting archives

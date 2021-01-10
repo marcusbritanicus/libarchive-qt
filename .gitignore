@@ -5,3 +5,4 @@ build
 .build
 .qmake.stash
 example/archiver
+debian

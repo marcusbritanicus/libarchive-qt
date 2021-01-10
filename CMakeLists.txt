@@ -18,6 +18,8 @@ else()
     message( FATAL_ERROR "Unsupported version of Qt specified. Choose between Qt4, Qt5 and Qt6." )
 endif()
 
+include_directories( lib )
+
 add_subdirectory( lib )
 add_subdirectory( example )
 

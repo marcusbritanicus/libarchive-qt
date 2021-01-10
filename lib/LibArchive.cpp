@@ -257,6 +257,60 @@ QString LibArchiveQt::suffix( QString archiveName ) {
 	return "";
 };
 
+QStringList LibArchiveQt::supportedFormats() {
+
+	QStringList supported;
+
+	supported << mimeDb.mimeTypeForFile( "file.cpio" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.shar" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.tar" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.tar.gz" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.tar.grz" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.tar.xz" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.tar.lzma" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.tar.lz4" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.tar.bz2" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.tar.Z" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.iso" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.zip" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.ar" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.xar" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.7z" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.lz" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.lz4" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.uu" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.lzo" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.gz" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.bz2" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.lzma" ).name();
+	supported << mimeDb.mimeTypeForFile( "file.xz" ).name();
+
+	QString binary;
+
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+	QStringList exeLocs = QString::fromLocal8Bit( qgetenv( "PATH" ) ).split( ":", Qt::SkipEmptyParts );
+	#else
+	QStringList exeLocs = QString::fromLocal8Bit( qgetenv( "PATH" ) ).split( ":", QString::SkipEmptyParts );
+	#endif
+
+	QString lzop = mimeDb.mimeTypeForFile( "file.lzo" ).name();
+	QString lzip = mimeDb.mimeTypeForFile( "file.lz" ).name();
+	QString lrzip = mimeDb.mimeTypeForFile( "file.lrz" ).name();
+
+	Q_FOREACH( QString loc, exeLocs ) {
+		if ( exists( loc + "/lzip" ) and not supported.contains( lzip ) )
+			supported << lzip;
+
+		if ( exists( loc + "/lzop" ) and not supported.contains( lzop ) )
+			supported << lzop;
+
+		if ( exists( loc + "/lrzip" ) and not supported.contains( lrzip ) )
+			supported << lrzip;
+	}
+
+	return supported;
+};
+
 void LibArchiveQt::createArchive() {
 
 	mJob = CreateArchive;
@@ -435,6 +489,8 @@ void LibArchiveQt::setDestination( QString path ) {
 	dest = QString( path );
 	if ( not QFileInfo( QDir( dest ).absolutePath() ).exists() )
 		mkpath( path, 0755 );
+
+	qDebug() << "Extracting to:" << dest;
 };
 
 void LibArchiveQt::waitForFinished() {
@@ -593,8 +649,11 @@ bool LibArchiveQt::doExtractArchive() {
 	char srcDir[ 10240 ] = { 0 };
 	getcwd( srcDir, 10240 );
 
-	if ( not dest.isEmpty() )
-		chdir( dest.toUtf8().data() );
+	if ( not dest.isEmpty() ) {
+		int ret = chdir( dest.toUtf8().data() );
+		if ( ret )
+			qDebug() << "chdir() failed:" << errno;
+	}
 
 	if ( archiveType == Single ) {
 		QMimeType mType = mimeDb.mimeTypeForFile( archiveName );
