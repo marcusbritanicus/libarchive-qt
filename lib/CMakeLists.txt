@@ -1,10 +1,10 @@
 project( archiveqt )
 cmake_minimum_required( VERSION 3.8 )
 
-set( PROJECT_VERSION 2.0.1 )
+set( PROJECT_VERSION 2.0.2 )
 set( PROJECT_VERSION_MAJOR 2 )
 set( PROJECT_VERSION_MINOR 0 )
-set( PROJECT_VERSION_PATCH 1 )
+set( PROJECT_VERSION_PATCH 3 )
 
 set( PROJECT_VERSION_MAJOR_MINOR ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR} )
 
@@ -131,5 +131,9 @@ elseif ( USEQT STREQUAL "Qt6" )
 endif()
 
 install( TARGETS mylib_shared EXPORT LIBRARY )
-install( TARGETS mylib_static EXPORT LIBRARY )
+
+if ( INSTALL_STATIC )
+	install( TARGETS mylib_static EXPORT LIBRARY )
+endif()
+
 install( FILES libarchiveqt.h DESTINATION include/ )

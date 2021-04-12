@@ -7,6 +7,7 @@ if ( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
 endif()
 
 set( USEQT "Qt5" CACHE STRING "Build using particular version of Qt" )
+set( INSTALL_STATIC TRUE CACHE BOOL "Install the static library as well" )
 
 if ( USEQT STREQUAL "Qt4" OR USEQT STREQUAL "4" )
     set( USEQT "Qt4" )
