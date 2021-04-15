@@ -54,7 +54,7 @@ QString formatSize( qint64 num ) {
 /* Pretty print the usage */
 void printUsage( const char *exec ) {
 
-	std::cout << "Archiver v1.0\n" << std::endl;
+	std::cout << "Archiver v2.0.4\n" << std::endl;
 
 	std::cout << "Usage:\n\t" << exec << " -c archive.xxx file1 file2 file3 ..." << std::endl;
 	std::cout << "\t" << exec << " -d archive.xxx output_dir" << std::endl;
