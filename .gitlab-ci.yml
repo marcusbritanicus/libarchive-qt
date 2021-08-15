@@ -2,7 +2,7 @@ image: ubuntu:xenial
 
 before_script:
     - apt-get update -yq
-    - apt install g++ git ca-certificates make cmake ninja-build extra-cmake-modules
+    - apt-get install -y g++ git ca-certificates make cmake ninja-build extra-cmake-modules
     - apt-get install -y cmake qttools5-dev g++ make libarchive-dev liblzma-dev libbz2-dev zlib1g-dev liblz-dev
 
 build_amd64:
