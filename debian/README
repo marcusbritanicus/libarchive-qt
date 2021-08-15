@@ -1,0 +1,23 @@
+CoreApps
+
+CoreApps is an App suite. There are 19 apps in total.
+
+There are some core features that makes them great. Some are listed here.
+
+    - All the apps are light with lesser dependencies and uses less ram.
+    - Bookmark support across the all apps makes your important files to link in one place.
+    - All the apps are touch-friendly, suitable Phablet and Tablet and we are working towards that.
+    - Apps use the precious vertical screen real estate properly.
+       Shows what you need, use the screen on the items what’s matter to user.
+    - We introduced a feature called Session in CoreStuff app.
+       You can select some apps with argument and give a name to make a session.
+       Then double click the session to open all the apps with the given argument.
+    - All the search you done will be saved as Search Activity.
+       Also you just double click that Search Activity it will show the result from that folder which you searched before.
+    - Recent Activities in CoreStuff will show all the app you opened with the file.
+       Just double click that, it will restore the app with that file you working with before.
+    - Don't worry you can clear the both search and recent activities.
+    - We try to keep the code standard to C++17 and keep it clean and tested in Qt latest release.
+    - All the apps can run in low resource device like Raspberry Pi and device with out hardware acceleration.
+
+ -- Marcus Britanicus <marcusbritanicus@gmail.com>  Wed, 06 Jan 2021 11:38:48 +0530

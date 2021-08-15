@@ -1,0 +1,3 @@
+shlibs:Depends=libarchive13 (>= 3.0.4), libbz2-1.0, libc6 (>= 2.14), libgcc-s1 (>= 3.0), liblzma5 (>= 5.1.1alpha+20120614), libqt5core5a (>= 5.15.1), libstdc++6 (>= 5), zlib1g (>= 1:1.1.4)
+misc:Depends=
+misc:Pre-Depends=

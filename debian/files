@@ -1,0 +1,6 @@
+libarchiveqt-bin-dbgsym_2.0.5_amd64.deb debug optional automatic=yes
+libarchiveqt-bin_2.0.5_amd64.deb utils optional
+libarchiveqt-dbgsym_2.0.5_amd64.deb debug optional automatic=yes
+libarchiveqt-dev_2.0.5_amd64.deb libdevel optional
+libarchiveqt_2.0.5_amd64.buildinfo utils optional
+libarchiveqt_2.0.5_amd64.deb utils optional

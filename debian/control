@@ -1,0 +1,82 @@
+Source: libarchiveqt
+Section: utils
+Priority: optional
+Maintainer: Marcus Britanicus <marcusbritanicus@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.5.1
+Homepage: https://cubocore.gitlab.io
+Vcs-Browser: https://gitlab.com/marcusbritanicus/libarchive-qt
+Vcs-Git: https://gitlab.com/marcusbritanicus/libarchive-qt.git
+Rules-Requires-Root: no
+
+Package: libarchiveqt-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libarchiveqt (= ${binary:Version}), ${misc:Depends}
+Description: A Qt based archiving solution with libarchive backend
+ This is a simple archiving library for Qt.
+ Currently it supports the following archive/compression formats
+  * Gzip
+  * BZip2
+  * LZMA2
+  * LZip
+  * LZ4
+  * Cpio
+  * AR
+  * ISO9660
+  * PAX
+  * Shar
+  * Zip
+  * 7Zip
+  * Tar
+ .
+ This package provides the files necessary for development with libarchive-qt.
+
+Package: libarchiveqt
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: lzop, lrzip
+Description: A Qt based archiving solution with libarchive backend
+ This is a simple archiving library for Qt.
+ Currently it supports the following archive/compression formats
+  * Gzip
+  * BZip2
+  * LZMA2
+  * LZip
+  * LZ4
+  * Cpio
+  * AR
+  * ISO9660
+  * PAX
+  * Shar
+  * Zip
+  * 7Zip
+  * Tar
+ .
+ This package provides the libarchive-qt shared library.
+
+Package: libarchiveqt-bin
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: lzop, lrzip
+Description: A Qt based archiving solution with libarchive backend
+ This is a simple archiving library for Qt.
+ Currently it supports the following archive/compression formats
+  * Gzip
+  * BZip2
+  * LZMA2
+  * LZip
+  * LZ4
+  * Cpio
+  * AR
+  * ISO9660
+  * PAX
+  * Shar
+  * Zip
+  * 7Zip
+  * Tar
+ .
+ This package provides the standalone archiver binary.

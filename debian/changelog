@@ -1,0 +1,35 @@
+libarchiveqt (2.0.5) unstable; urgency=medium
+  * Fix .gitlab-ci.yml
+  * Bump version nubmer
+
+ -- Marcus Britanicus <marcusbritanicus@gmail.com>  Wed, 15 Aug 2021 12:00:00 +0530
+
+libarchiveqt (2.0.4) unstable; urgency=medium
+  * Added static member LibArchiveQt::suffix(...)
+  * Other minor improvements
+
+ -- Marcus Britanicus <marcusbritanicus@gmail.com>  Wed, 07 Jan 2021 12:00:00 +0530
+
+libarchiveqt (2.0.0) unstable; urgency=medium
+  * Support for adding paths relative to some path
+  * Progress support for compressing and extracting archives
+	- Check inputList for non-existent files
+
+ -- Marcus Britanicus <marcusbritanicus@gmail.com>  Wed, 07 Jan 2021 12:00:00 +0530
+
+libarchiveqt (1.1.1) unstable; urgency=medium
+  * Single member extraction bug fix
+  * List archive bug fix
+
+ -- Marcus Britanicus <marcusbritanicus@gmail.com>  Wed, 07 Jan 2021 12:00:00 +0530
+
+libarchiveqt (1.1.0) unstable; urgency=medium
+  * Single member extraction
+  * Some bug fixes
+
+ -- Marcus Britanicus <marcusbritanicus@gmail.com>  Wed, 07 Jan 2021 12:00:00 +0530
+
+libarchiveqt (1.0.0) unstable; urgency=medium
+  * Initial release
+
+ -- Marcus Britanicus <marcusbritanicus@gmail.com>  Wed, 07 Jan 2021 12:00:00 +0530
