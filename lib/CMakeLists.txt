@@ -1,12 +1,5 @@
-project( archiveqt )
+project( library )
 cmake_minimum_required( VERSION 3.8 )
-
-set( PROJECT_VERSION 2.0.5 )
-set( PROJECT_VERSION_MAJOR 2 )
-set( PROJECT_VERSION_MINOR 0 )
-set( PROJECT_VERSION_PATCH 5 )
-
-set( PROJECT_VERSION_MAJOR_MINOR ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR} )
 
 set( CMAKE_CXX_STANDARD 17 )
 set( CMAKE_INCLUDE_CURRENT_DIR ON )
@@ -101,10 +94,10 @@ elseif ( USEQT STREQUAL "Qt6" )
 endif()
 
 add_library( mylib_shared SHARED $<TARGET_OBJECTS:archiveqt> )
-set_target_properties( mylib_shared PROPERTIES VERSION ${PROJECT_VERSION} )
-set_target_properties( mylib_shared PROPERTIES SOVERSION ${PROJECT_VERSION} )
+set_target_properties( mylib_shared PROPERTIES VERSION ${CMAKE_PROJECT_VERSION} )
+set_target_properties( mylib_shared PROPERTIES SOVERSION ${CMAKE_PROJECT_VERSION} )
 set_target_properties( mylib_shared PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR_MINOR} )
-set_target_properties( mylib_shared PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR} )
+set_target_properties( mylib_shared PROPERTIES SOVERSION ${CMAKE_PROJECT_VERSION_MAJOR} )
 
 if ( USEQT STREQUAL "Qt4" )
 	set_target_properties( mylib_shared PROPERTIES OUTPUT_NAME archiveqt4 )
@@ -116,7 +109,6 @@ elseif ( USEQT STREQUAL "Qt6" )
 	set_target_properties( mylib_shared PROPERTIES OUTPUT_NAME archiveqt6 )
 	target_link_libraries( mylib_shared  Qt::Core archive z bz2 lzma )
 endif()
-
 
 add_library( mylib_static STATIC $<TARGET_OBJECTS:archiveqt> )
 if ( USEQT STREQUAL "Qt4" )
@@ -137,3 +129,16 @@ if ( INSTALL_STATIC )
 endif()
 
 install( FILES libarchiveqt.h DESTINATION include/ )
+
+
+## Configure and install the pkg-config .pc files
+if ( USEQT STREQUAL "Qt4" )
+    configure_file( pkgconfig/archiveqt.pc.in archiveqt.pc @ONLY )
+    install( FILES ${CMAKE_CURRENT_BINARY_DIR}/archiveqt.pc DESTINATION share/pkgconfig )
+elseif ( USEQT STREQUAL "Qt5" )
+    configure_file( pkgconfig/archiveqt5.pc.in archiveqt5.pc @ONLY )
+    install( FILES ${CMAKE_CURRENT_BINARY_DIR}/archiveqt5.pc DESTINATION share/pkgconfig )
+elseif ( USEQT STREQUAL "Qt6" )
+    configure_file( pkgconfig/archiveqt6.pc.in archiveqt6.pc @ONLY )
+    install( FILES ${CMAKE_CURRENT_BINARY_DIR}/archiveqt6.pc DESTINATION share/pkgconfig )
+endif()
