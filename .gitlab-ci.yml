@@ -3,7 +3,7 @@ debian_sid_amd64:
     image: debian:sid
     before_script:
         - apt-get update -yq
-        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot
+        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot debhelper-compat
         - apt-get install -y cmake qttools5-dev g++ make libarchive-dev liblzma-dev libbz2-dev zlib1g-dev liblz-dev
 
     script:
@@ -14,7 +14,7 @@ debian_testing_amd64:
     image: debian:sid
     before_script:
         - apt-get update -yq
-        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot
+        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot debhelper-compat
         - apt-get install -y cmake qttools5-dev g++ make libarchive-dev liblzma-dev libbz2-dev zlib1g-dev liblz-dev
 
     script:
@@ -25,7 +25,7 @@ debian_stable_amd64:
     image: debian:sid
     before_script:
         - apt-get update -yq
-        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot
+        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot debhelper-compat
         - apt-get install -y cmake qttools5-dev g++ make libarchive-dev liblzma-dev libbz2-dev zlib1g-dev liblz-dev
 
     script:
