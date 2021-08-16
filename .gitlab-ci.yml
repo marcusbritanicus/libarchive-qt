@@ -8,15 +8,15 @@ debian_sid_amd64:
 
     script:
         - dpkg-buildpackage -rfakeroot -uc -us
-        - mv ../archiver_2.0.6_amd64.deb ../archiver_2.0.6_sid_amd64.deb
-        - mv ../libarchiveqt_2.0.6_amd64.deb ../libarchiveqt_2.0.6_sid_amd64.deb
-        - mv ../libarchiveqt-dev_2.0.6_amd64.deb ../libarchiveqt-dev_2.0.6_sid_amd64.deb
+        - mv ../archiver_2.0.6_amd64.deb ./archiver_2.0.6_sid_amd64.deb
+        - mv ../libarchiveqt_2.0.6_amd64.deb ./libarchiveqt_2.0.6_sid_amd64.deb
+        - mv ../libarchiveqt-dev_2.0.6_amd64.deb ./libarchiveqt-dev_2.0.6_sid_amd64.deb
 
     artifacts:
         paths:
-            - ../archiver_2.0.6_sid_amd64.deb
-            - ../libarchiveqt_2.0.6_sid_amd64.deb
-            - ../libarchiveqt-dev_2.0.6_sid_amd64.deb
+            - archiver_2.0.6_sid_amd64.deb
+            - libarchiveqt_2.0.6_sid_amd64.deb
+            - libarchiveqt-dev_2.0.6_sid_amd64.deb
 
 debian_testing_amd64:
     stage: build
@@ -28,15 +28,15 @@ debian_testing_amd64:
 
     script:
         - dpkg-buildpackage -rfakeroot -uc -us
-        - mv ../archiver_2.0.6_amd64.deb ../archiver_2.0.6_testing_amd64.deb
-        - mv ../libarchiveqt_2.0.6_amd64.deb ../libarchiveqt_2.0.6_testing_amd64.deb
-        - mv ../libarchiveqt-dev_2.0.6_amd64.deb ../libarchiveqt-dev_2.0.6_testing_amd64.deb
+        - mv ../archiver_2.0.6_amd64.deb ./archiver_2.0.6_testing_amd64.deb
+        - mv ../libarchiveqt_2.0.6_amd64.deb ./libarchiveqt_2.0.6_testing_amd64.deb
+        - mv ../libarchiveqt-dev_2.0.6_amd64.deb ./libarchiveqt-dev_2.0.6_testing_amd64.deb
 
     artifacts:
         paths:
-            - ../archiver_2.0.6_testing_amd64.deb
-            - ../libarchiveqt_2.0.6_testing_amd64.deb
-            - ../libarchiveqt-dev_2.0.6_testing_amd64.deb
+            - archiver_2.0.6_testing_amd64.deb
+            - libarchiveqt_2.0.6_testing_amd64.deb
+            - libarchiveqt-dev_2.0.6_testing_amd64.deb
 
 debian_stable_amd64:
     stage: build
@@ -48,12 +48,12 @@ debian_stable_amd64:
 
     script:
         - dpkg-buildpackage -rfakeroot -uc -us
-        - mv ../archiver_2.0.6_amd64.deb ../archiver_2.0.6_stable_amd64.deb
-        - mv ../libarchiveqt_2.0.6_amd64.deb ../libarchiveqt_2.0.6_stable_amd64.deb
-        - mv ../libarchiveqt-dev_2.0.6_amd64.deb ../libarchiveqt-dev_2.0.6_stable_amd64.deb
+        - mv ../archiver_2.0.6_amd64.deb ./archiver_2.0.6_stable_amd64.deb
+        - mv ../libarchiveqt_2.0.6_amd64.deb ./libarchiveqt_2.0.6_stable_amd64.deb
+        - mv ../libarchiveqt-dev_2.0.6_amd64.deb ./libarchiveqt-dev_2.0.6_stable_amd64.deb
 
     artifacts:
         paths:
-            - ../archiver_2.0.6_stable_amd64.deb
-            - ../libarchiveqt_2.0.6_stable_amd64.deb
-            - ../libarchiveqt-dev_2.0.6_stable_amd64.deb
+            - archiver_2.0.6_stable_amd64.deb
+            - libarchiveqt_2.0.6_stable_amd64.deb
+            - libarchiveqt-dev_2.0.6_stable_amd64.deb
