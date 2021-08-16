@@ -20,7 +20,7 @@ debian_sid_amd64:
 
 debian_testing_amd64:
     stage: build
-    image: debian:sid
+    image: debian:testing
     before_script:
         - apt-get update -yq
         - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot debhelper-compat
@@ -40,7 +40,7 @@ debian_testing_amd64:
 
 debian_stable_amd64:
     stage: build
-    image: debian:sid
+    image: debian:stable
     before_script:
         - apt-get update -yq
         - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot debhelper-compat
