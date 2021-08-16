@@ -1,12 +1,32 @@
-image: debian:sid
+debian_sid_amd64:
+    stage: build
+    image: debian:sid
+    before_script:
+        - apt-get update -yq
+        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot
+        - apt-get install -y cmake qttools5-dev g++ make libarchive-dev liblzma-dev libbz2-dev zlib1g-dev liblz-dev
 
-before_script:
-    - apt-get update -yq
-    - apt-get install -y g++ git ca-certificates make cmake ninja-build
-    - apt-get install -y cmake qttools5-dev g++ make libarchive-dev liblzma-dev libbz2-dev zlib1g-dev liblz-dev
+    script:
+        - dpkg-buildpackage -rfakeroot -uc -us
 
-build_amd64:
-  stage: build
-  script:
-    - mkdir build && cd build
-    - cmake .. && make -kj$(nproc)
+debian_testing_amd64:
+    stage: build
+    image: debian:sid
+    before_script:
+        - apt-get update -yq
+        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot
+        - apt-get install -y cmake qttools5-dev g++ make libarchive-dev liblzma-dev libbz2-dev zlib1g-dev liblz-dev
+
+    script:
+        - dpkg-buildpackage -rfakeroot -uc -us
+
+debian_stable_amd64:
+    stage: build
+    image: debian:sid
+    before_script:
+        - apt-get update -yq
+        - apt-get install -y g++ git ca-certificates make cmake ninja-build build-essential fakeroot
+        - apt-get install -y cmake qttools5-dev g++ make libarchive-dev liblzma-dev libbz2-dev zlib1g-dev liblz-dev
+
+    script:
+        - dpkg-buildpackage -rfakeroot -uc -us
