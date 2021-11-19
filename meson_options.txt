@@ -1,0 +1,14 @@
+option(
+    'use_qt_version',
+    type: 'combo',
+    choices: ['qt4', 'qt5', 'qt6'],
+    value: 'qt5',
+    description: 'Select the Qt version to use'
+)
+
+option(
+    'install_static',
+    type: 'boolean',
+    value: true,
+    description: 'Install the static library'
+)

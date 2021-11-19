@@ -1,4 +1,4 @@
 usr/include/libarchiveqt.h
 usr/lib/*/libarchiveqt5.so
 usr/lib/*/libarchiveqt5.a
-usr/share/pkgconfig/*
+usr/lib/*/pkgconfig/*
