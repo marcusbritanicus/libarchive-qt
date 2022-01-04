@@ -46,11 +46,6 @@ if ( QtCore.version().startswith( '4.' ) )
     ]
 endif
 
-Includes = [
-    'MimeHandler',
-    'StandardPaths'
-]
-
 Mocs = Qt.compile_moc(
     headers : Headers,
     dependencies: Deps
@@ -94,5 +89,5 @@ pkgconfig.generate(
 		filebase: TgtName,
 		description: 'A Qt based archiving solution with libarchive backend',
 		requires: [ QtCore.name(), Zlib.name(), Lzma.name(), Archive.name() ],
-    libraries: [ 'bz2' ]
+    libraries: [ '-lbz2' ]
 )

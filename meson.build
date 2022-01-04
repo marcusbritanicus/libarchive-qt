@@ -37,6 +37,12 @@ endif
 
 Deps = [ QtCore, Zlib, Lzma, BZip, Archive ]
 
+Includes = include_directories(
+    'lib',
+    'lib/MimeHandler',
+    'lib/StandardPaths',
+)
+
 # Contains the main library
 subdir( 'lib' )
 
