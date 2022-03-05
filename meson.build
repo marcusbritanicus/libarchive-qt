@@ -2,7 +2,7 @@ project(
 	'Archive Qt',
     'c',
 	'cpp',
-	version: '2.0.6',
+	version: '2.0.7',
 	license: 'GPLv3',
 	meson_version: '>=0.59.0',
 	default_options: [
@@ -13,6 +13,9 @@ project(
 	],
 )
 
+add_global_arguments( '-DPROJECT_VERSION=' + meson.project_version(), language : 'cpp' )
+add_global_arguments( '-fPIC', language : 'cpp' )
+
 Zlib = dependency( 'zlib' )
 Lzma = dependency( 'liblzma' )
 BZip = meson.get_compiler( 'cpp' ).find_library( 'bz2' )
@@ -20,17 +23,17 @@ Archive = dependency( 'libarchive' )
 
 if get_option('use_qt_version') == 'qt4'
 		Qt = import( 'qt4' )
-		QtCore = dependency( 'qt4', modules: [ 'Core' ] )
+		QtCore = dependency( 'Qt4Core' )
 		TgtName = 'archiveqt4'
 
 elif get_option('use_qt_version') == 'qt5'
 		Qt = import( 'qt5' )
-		QtCore = dependency( 'qt5', modules: [ 'Core' ] )
+		QtCore = dependency( 'Qt5Core' )
 		TgtName = 'archiveqt5'
 
 elif get_option('use_qt_version') == 'qt6'
 		Qt = import( 'qt6' )
-		QtCore = dependency( 'qt6', modules: [ 'Core' ] )
+		QtCore = dependency( 'Qt6Core' )
 		TgtName = 'archiveqt6'
 
 endif

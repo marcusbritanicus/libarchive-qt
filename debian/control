@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Marcus Britanicus <marcusbritanicus@gmail.com>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.5.1
-Homepage: https://cubocore.gitlab.io
+Homepage: https://desq-project.org/libarchiveqt/
 Vcs-Browser: https://gitlab.com/marcusbritanicus/libarchive-qt
 Vcs-Git: https://gitlab.com/marcusbritanicus/libarchive-qt.git
 Rules-Requires-Root: no

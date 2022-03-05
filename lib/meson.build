@@ -57,6 +57,7 @@ shared = shared_library(
 		include_directories: Includes,
     dependencies: Deps,
     install: true,
+    link_args: ['-rdynamic','-fPIC'],
     install_dir: join_paths( get_option( 'libdir' ) )
 )
 
