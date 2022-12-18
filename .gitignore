@@ -5,3 +5,12 @@ build
 .build
 .qmake.stash
 example/archiver
+debian/archiver.substvars 
+debian/libarchiveqt-dev.substvars 
+debian/libarchiveqt.substvars 
+debian/.debhelper/ 
+debian/archiver/ 
+debian/debhelper-build-stamp 
+debian/libarchiveqt/ 
+debian/libarchiveqt-dev/ 
+debian/tmp
