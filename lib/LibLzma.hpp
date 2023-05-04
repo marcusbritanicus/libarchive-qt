@@ -1,8 +1,6 @@
-/*
-	*
-	* LibLzma.hpp - LibLzma.cpp header
-	*
-*/
+/**
+ * LibLzma.hpp - LibLzma.cpp header
+ **/
 
 #pragma once
 
@@ -11,15 +9,14 @@
 #include <lzma.h>
 
 class NBLzma {
+    public:
+        NBLzma( QString, QString file = QString() );
+        bool extract();
 
-	public:
-		NBLzma( QString, QString file = QString() );
-		bool extract();
+        static QString fileName;
+        static QString lzmaFileName;
 
-		static QString fileName;
-		static QString lzmaFileName;
-
-	private:
-		FILE *fdin, *fdout;
-		int NBLzmaError;
+    private:
+        FILE *fdin, *fdout;
+        int NBLzmaError;
 };

@@ -1,8 +1,6 @@
-/*
-	*
-	* LibGZip.hpp - LibGZip.cpp header
-	*
-*/
+/**
+ * LibGZip.hpp - LibGZip.cpp header
+ **/
 
 #pragma once
 
@@ -11,15 +9,14 @@
 #include <zlib.h>
 
 class NBGZip {
+    public:
+        NBGZip( QString, QString file = QString() );
+        bool extract();
 
-	public:
-		NBGZip( QString, QString file = QString() );
-		bool extract();
+        static QString fileName;
+        static QString gzFileName;
 
-		static QString fileName;
-		static QString gzFileName;
-
-	private:
-		gzFile gzip;
-		int NBGZipError;
+    private:
+        gzFile gzip;
+        int NBGZipError;
 };

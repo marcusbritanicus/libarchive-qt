@@ -1,8 +1,6 @@
-/*
-    *
-    * Global.hpp - Globally used header
-    *
-*/
+/**
+ * Global.hpp - Globally used header
+ **/
 
 #pragma once
 
@@ -24,13 +22,13 @@
 #include <assert.h>
 
 #if QT_VERSION >= 0x050000
-	#include <QMimeDatabase>
-	#include <QMimeType>
-	#include <QStandardPaths>
+#include <QMimeDatabase>
+#include <QMimeType>
+#include <QStandardPaths>
 #else
-	#include <NBMimeDatabase.hpp>
-	#include <NBMimeType.hpp>
-	#include <NBStandardPaths.hpp>
+#include <NBMimeDatabase.hpp>
+#include <NBMimeType.hpp>
+#include <NBStandardPaths.hpp>
 #endif
 
 static QMimeDatabase mimeDb;

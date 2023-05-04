@@ -1,3 +1,10 @@
+libarchiveqt (2.0.8) unstable; urgency=medium
+  * Remove Qt4 support
+  * Remove Qt5/Qt6 deprecation warnings
+  * Bump version number
+
+ -- Marcus Britanicus <marcusbritanicus@gmail.com>  Thu, 04 Mar 2023 10:00:00 +0530
+
 libarchiveqt (2.0.7) unstable; urgency=medium
   * Fix meson-related bugs
   * Bump version number
